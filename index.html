@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0806">
+<title>Пушкин. Главное</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yeseva+One&display=swap" rel="stylesheet">
+
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html,body{
+  margin:0;height:100%;
+  background:#0a0806;color:#fbf2ed;
+  overflow:hidden;overscroll-behavior:none;
+  -webkit-text-size-adjust:100%;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  touch-action:none;cursor:default;
+  user-select:none;-webkit-user-select:none;
+}
+a,button{cursor:default}
+#stage{
+  position:fixed;inset:0;z-index:0;background:#0a0806;
+  transition:transform 1.8s cubic-bezier(.16,1,.3,1),filter 1.8s ease,opacity 1.2s ease;
+}
+#stage canvas{display:block;width:100%;height:100%}
+
+/* Пушкин уходит ВВЕРХ и увеличивается */
+body.is-menu #stage{
+  transform:translateY(-8vh) scale(1.15);
+  filter:brightness(0.25) blur(4px);
+  opacity:0.7;
+}
+
+/* ---------- MENU ---------- */
+#menu{
+  position:fixed;inset:0;z-index:10;
+  display:flex;flex-direction:column;justify-content:center;
+  padding-left:clamp(40px,8vw,140px);
+  pointer-events:none;
+  background:radial-gradient(circle at 20% 50%, rgba(20,15,10,0.6) 0%, rgba(10,8,6,0.85) 60%, rgba(5,4,3,0.98) 100%);
+  opacity:0;
+  transition:opacity 1s ease;
+}
+body.is-menu #menu{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.menu-link{
+  position:relative;
+  display:inline-block;
+  width:fit-content;
+  text-decoration:none;
+  font-family:'Yeseva One', serif;
+  font-size:clamp(3rem,9vw,8.5rem);
+  line-height:1.05;
+  color:#f4e8d8;
+  margin-bottom:clamp(1rem,3vw,2rem);
+  opacity:0;
+  transition:opacity 0.8s ease, filter 0.4s ease;
+  will-change:opacity;
+}
+body.is-menu .menu-link{
+  opacity:1;
+}
+body.is-menu .menu-link:nth-child(1){ transition-delay:0.15s; }
+body.is-menu .menu-link:nth-child(2){ transition-delay:0.30s; }
+
+/* ---------- EYELIDS (BLINK) ---------- */
+#blink-overlay {
+  position:fixed;inset:0;z-index:20;pointer-events:none;
+  display:flex;flex-direction:column;
+}
+.blink-lid {
+  flex:1;background:#0a0806;
+  transform:scaleY(0);transform-origin:top;
+}
+.blink-lid.bottom { transform-origin:bottom; }
+</style>
+</head>
+<body>
+
+<div id="stage"></div>
+
+<div id="menu">
+  <a href="/bio" class="menu-link" id="link-bio">Жизнь</a>
+  <a href="/po" class="menu-link" id="link-poems">Стихотворения</a>
+</div>
+
+<div id="blink-overlay">
+  <div class="blink-lid top"></div>
+  <div class="blink-lid bottom"></div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+
+const clamp = (v,a,b) => Math.min(b, Math.max(a, v));
+const ease  = { expoOut: t => t >= 1 ? 1 : 1 - Math.pow(2, -10*t) };
+
+/* ---------- renderer ---------- */
+const host = document.getElementById('stage');
+const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:false, powerPreference:'high-performance' });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.setClearColor(0x0a0806, 1);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.00;
+renderer.domElement.style.cssText = 'display:block;width:100%;height:100%;';
+host.appendChild(renderer.domElement);
+
+const scene  = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+camera.position.set(0, 0, 5);
+
+/* ---------- shaders ---------- */
+const vertexShader = /* glsl */`
+varying vec2 vUv;
+void main() {
+  vUv = uv;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+`;
+
+const fragmentShader = /* glsl */`
+precision highp float;
+varying vec2 vUv;
+
+uniform sampler2D uMap;
+uniform vec2  uRes;
+uniform vec2  uImg;
+uniform float uTime;
+uniform float uReveal;
+uniform vec2  uParallax;
+
+float hash1(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float noise(vec2 p) {
+  vec2 i = floor(p), f = fract(p);
+  vec2 u = f*f*(3.0 - 2.0*f);
+  return mix(mix(hash1(i), hash1(i+vec2(1,0)), u.x),
+             mix(hash1(i+vec2(0,1)), hash1(i+vec2(1,1)), u.x), u.y);
+}
+float fbm(vec2 p) {
+  float v = 0.0, a = 0.5;
+  for (int i = 0; i < 5; i++) { v += a * noise(p); p = p * 2.02 + 13.7; a *= 0.5; }
+  return v;
+}
+
+void main() {
+  float sa = uRes.x / uRes.y;
+  float ia = max(uImg.x / uImg.y, 0.0001);
+  float t  = uTime;
+
+  vec2 p = vec2((vUv.x - 0.5) * sa, vUv.y - 0.5);
+
+  /* параллакс от мыши */
+  p.x += uParallax.x * 0.018;
+  p.y += uParallax.y * 0.014;
+
+  /* микро-дыхание */
+  float breath = 1.0 + sin(t * 0.40) * 0.0032 + sin(t * 0.17 + 1.2) * 0.0014;
+  p /= breath;
+
+  /* COVER FIT */
+  float k = max(1.0, sa / ia) * 1.10;
+  vec2 uv = vec2(p.x / (ia * k) + 0.5, p.y / k + 0.5);
+  uv.x -= 0.035;
+  vec2 uvSafe = clamp(uv, vec2(0.001), vec2(0.999));
+
+  vec3 col = texture2D(uMap, uvSafe).rgb;
+
+  /* =========================================
+     РЕЛЬЕФНАЯ ТЕКСТУРА ФОНА (Canvas / Paper)
+     ========================================= */
+  vec2 bgUV = uvSafe * uImg * 0.06;
+  float surfaceNoise = fbm(bgUV + vec2(t * 0.015));
+  float surfaceNoise2 = fbm(bgUV * 3.0 - vec2(t * 0.02));
+  
+  float relief = (surfaceNoise - 0.5) * 0.45 + (surfaceNoise2 - 0.5) * 0.15;
+  col = col * (1.0 + relief);
+
+  /* базовый грейд */
+  col *= vec3(1.02, 0.98, 0.94);
+  col *= 0.74;
+
+  /* =========================================
+     ОГОНЬ И БЛИКИ В УГЛУ
+     ========================================= */
+  float flick = 0.82
+    + sin(t * 2.7) * 0.045
+    + sin(t * 6.9 + 1.3) * 0.038
+    + sin(t * 12.4 + 2.7) * 0.028
+    + (fbm(vec2(t * 2.2, 3.0)) - 0.5) * 0.15;
+
+  vec2 firePos = vec2(sa * 0.50, -0.60);
+  vec2 fd = p - firePos;
+  float fireDist = dot(fd, fd);
+
+  vec3 fireWarm = vec3(0.95, 0.36, 0.12);
+  vec3 fireDeep = vec3(0.70, 0.16, 0.05);
+  col += fireWarm * exp(-fireDist * 1.7) * flick * 0.090;
+  col += fireDeep * exp(-fireDist * 3.4) * flick * 0.055;
+
+  float fireMask = smoothstep(0.0, 0.55, exp(-fireDist * 2.0) * flick);
+  col *= mix(vec3(1.0), vec3(1.06, 0.86, 0.68), fireMask * 0.55);
+
+  float reflFire = exp(-fireDist * 1.5) * flick * 0.045;
+  col += vec3(1.0, 0.55, 0.28) * reflFire;
+
+  float cornerGlow = exp(-fireDist * 8.0) * flick;
+  col += vec3(1.0, 0.45, 0.15) * cornerGlow * 0.35;
+
+  /* свеча */
+  float candle =
+      1.0
+    + sin(t * 7.3) * 0.018
+    + sin(t * 13.1 + 1.7) * 0.012
+    + sin(t * 3.3 + 0.5) * 0.008
+    + (fbm(vec2(t * 1.7, 7.0)) - 0.5) * 0.040;
+  col *= candle;
+  col *= mix(vec3(1.0), vec3(1.035, 0.995, 0.945), (candle - 1.0) * 6.0 + 0.5);
+
+  /* виньетка */
+  vec2 vc = p * vec2(0.85, 0.72);
+  float vd = length(vc);
+  col *= 1.0 - smoothstep(0.45, 1.10, vd) * 0.55;
+
+  /* зерно */
+  float g = hash1(gl_FragCoord.xy + fract(t) * 137.0);
+  col += (g - 0.5) * 0.020;
+
+  /* появление */
+  col *= mix(0.35, 1.0, uReveal);
+
+  gl_FragColor = vec4(col, uReveal);
+}
+`;
+
+const uniforms = {
+  uMap:      { value: null },
+  uRes:      { value: new THREE.Vector2(1, 1) },
+  uImg:      { value: new THREE.Vector2(1, 1) },
+  uTime:     { value: 0 },
+  uReveal:   { value: 0 },
+  uParallax: { value: new THREE.Vector2(0, 0) }
+};
+
+const material = new THREE.ShaderMaterial({
+  uniforms, vertexShader, fragmentShader,
+  transparent: true, depthWrite: false, depthTest: false
+});
+
+const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
+plane.frustumCulled = false;
+scene.add(plane);
+
+const phTex = new THREE.DataTexture(new Uint8Array([20, 16, 12, 255]), 1, 1, THREE.RGBAFormat);
+phTex.needsUpdate = true;
+uniforms.uMap.value = phTex;
+
+/* ---------- post ---------- */
+const composer = new EffectComposer(renderer);
+composer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+composer.addPass(new RenderPass(scene, camera));
+
+const finalPass = new ShaderPass({
+  uniforms: {
+    tDiffuse: { value: null },
+    uTime:    { value: 0 },
+    uRes:     { value: new THREE.Vector2(1, 1) },
+    uGrain:   { value: 0.016 }
+  },
+  vertexShader: `
+    varying vec2 vUv;
+    void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }
+  `,
+  fragmentShader: `
+    precision highp float;
+    varying vec2 vUv;
+    uniform sampler2D tDiffuse;
+    uniform float uTime;
+    uniform vec2  uRes;
+    uniform float uGrain;
+    float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+    void main(){
+      vec3 col = texture2D(tDiffuse, vUv).rgb;
+      vec2 t = vUv * uRes;
+      float g1 = hash(t * 0.7 + fract(uTime * 8.0) * 100.0) - 0.5;
+      float g2 = hash(t * 0.3 + fract(uTime * 5.0) * 100.0) - 0.5;
+      float grain = g1 * 0.65 + g2 * 0.35;
+      col += grain * uGrain;
+      gl_FragColor = vec4(col, 1.0);
+    }
+  `
+});
+composer.addPass(finalPass);
+
+/* ---------- resize ---------- */
+function resize() {
+  const w = host.clientWidth || window.innerWidth;
+  const h = host.clientHeight || window.innerHeight;
+  if (!w || !h) return;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  const vh = 2 * Math.tan(camera.fov * Math.PI / 360) * camera.position.z;
+  const vw = vh * camera.aspect;
+  plane.scale.set(vw, vh, 1);
+  uniforms.uRes.value.set(w, h);
+  composer.setSize(w, h);
+  finalPass.uniforms.uRes.value.set(w, h);
+}
+
+/* ---------- state ---------- */
+const clock = new THREE.Clock();
+let elapsed = 0;
+let revealStart = -1;
+let isMenuOpen = false;
+
+const parallaxTarget  = new THREE.Vector2(0, 0);
+const parallaxCurrent = new THREE.Vector2(0, 0);
+
+/* ---------- texture ---------- */
+new THREE.TextureLoader().load('pushkin.jpg', (tex) => {
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = Math.min(16, renderer.capabilities.getMaxAnisotropy());
+  tex.minFilter = THREE.LinearMipmapLinearFilter;
+  tex.magFilter = THREE.LinearFilter;
+  tex.generateMipmaps = true;
+  if (uniforms.uMap.value && uniforms.uMap.value.dispose) uniforms.uMap.value.dispose();
+  uniforms.uMap.value = tex;
+  uniforms.uImg.value.set(tex.image.width || 1, tex.image.height || 1);
+  resize();
+  startReveal();
+}, undefined, () => startReveal());
+
+function startReveal() {
+  if (revealStart >= 0) return;
+  revealStart = performance.now();
+}
+
+/* ---------- pointer / parallax ---------- */
+window.addEventListener('pointermove', (e) => {
+  const cx = window.innerWidth / 2;
+  const cy = window.innerHeight / 2;
+  parallaxTarget.set((e.clientX - cx) / cx, (e.clientY - cy) / cy);
+}, { passive: true });
+
+/* ---------- toggle menu ---------- */
+function toggleMenu() {
+  isMenuOpen = !isMenuOpen;
+  document.body.classList.toggle('is-menu', isMenuOpen);
+}
+
+window.addEventListener('dblclick', (e) => {
+  if (e.target.closest('a')) return;
+  toggleMenu();
+});
+
+/* ---------- BLINK & Navigation ---------- */
+const lids = document.querySelectorAll('.blink-lid');
+const links = document.querySelectorAll('.menu-link');
+
+links.forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const href = link.getAttribute('href');
+    
+    lids[0].style.transition = 'transform 0.35s ease-in';
+    lids[1].style.transition = 'transform 0.35s ease-in';
+    lids[0].style.transform = 'scaleY(1)';
+    lids[1].style.transform = 'scaleY(1)';
+    
+    setTimeout(() => {
+      window.location.href = href;
+    }, 380);
+  });
+});
+
+/* ---------- loop ---------- */
+function tick() {
+  requestAnimationFrame(tick);
+
+  const dt = Math.min(0.05, clock.getDelta());
+  elapsed += dt;
+
+  uniforms.uTime.value = elapsed;
+
+  if (revealStart > 0) {
+    const raw = (performance.now() - revealStart) / 2400;
+    uniforms.uReveal.value = ease.expoOut(clamp(raw, 0, 1));
+  }
+
+  parallaxCurrent.lerp(parallaxTarget, Math.min(1, dt * 2.5));
+  uniforms.uParallax.value.copy(parallaxCurrent);
+
+  finalPass.uniforms.uTime.value = elapsed;
+  composer.render();
+}
+
+/* ---------- boot ---------- */
+resize();
+if (window.ResizeObserver) new ResizeObserver(resize).observe(host);
+else window.addEventListener('resize', resize);
+
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>
+```
