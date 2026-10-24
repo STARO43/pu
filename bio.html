@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru" class="no-js">
+<html lang="ru" class="no-js preload">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -55,6 +55,16 @@ body{
   -moz-osx-font-smoothing:grayscale;
   text-rendering:optimizeLegibility;
 }
+
+/* hide body until fonts are ready and intro is about to run */
+html.js.preload body {
+  visibility: hidden;
+  animation: preload-fallback 0.01s 3.5s forwards;
+}
+@keyframes preload-fallback {
+  from, to { visibility: visible; }
+}
+
 ::selection{background:rgba(140,35,25,.15);color:var(--ink)}
 [hidden]{display:none!important}
 *{cursor:default}
@@ -430,26 +440,46 @@ h1{
   paras.forEach(function (p) { byId[p.id] = p; });
 
   // ============================================================
-  // Магнитная сборка (ТОЛЬКО для шапки и первого абзаца)
+  // Preload reveal + hero animation
+  // Waits for fonts (or 2s), then reveals body and runs GSAP.
   // ============================================================
-  (function heroIntro() {
+  function runHeroIntro() {
+    document.documentElement.classList.remove('preload');
+
+    if (typeof gsap === 'undefined') return;
+
     var tl = gsap.timeline();
-    
+
     tl.fromTo(['.hero .eyebrow', '.hero h1', '.hero .dates', '.hero .hero-rule'],
-      { 
-        opacity: 0, 
-        x: function() { return (Math.random() - 0.5) * 100; }, 
-        y: function() { return (Math.random() - 0.5) * 100; }, 
-        rotation: function() { return (Math.random() - 0.5) * 10; } 
+      {
+        opacity: 0,
+        x: function () { return (Math.random() - 0.5) * 100; },
+        y: function () { return (Math.random() - 0.5) * 100; },
+        rotation: function () { return (Math.random() - 0.5) * 10; }
       },
       { opacity: 1, x: 0, y: 0, rotation: 0, duration: 2, stagger: 0.1, ease: "elastic.out(1, 0.7)" }
     );
 
-    tl.fromTo('#p1', 
+    tl.fromTo('#p1',
       { opacity: 0, y: 50, rotation: -2 },
       { opacity: 1, y: 0, rotation: 0, duration: 2, ease: "elastic.out(1, 0.8)" },
       "-=1.5"
     );
+  }
+
+  (function waitAndReveal() {
+    var fontP = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+    var gsapP = (typeof gsap !== 'undefined')
+      ? Promise.resolve()
+      : new Promise(function (resolve) {
+          if (document.readyState === 'complete') resolve();
+          else window.addEventListener('load', resolve, { once: true });
+        });
+
+    var readyP = Promise.all([fontP, gsapP]).catch(function () { return null; });
+    var timeoutP = new Promise(function (resolve) { setTimeout(resolve, 2000); });
+
+    Promise.race([readyP, timeoutP]).then(runHeroIntro);
   })();
 
   // ============================================================
