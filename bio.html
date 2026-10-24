@@ -61,24 +61,31 @@ body{
 a,button,[role="button"]{cursor:default;-webkit-tap-highlight-color:transparent}
 :focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:2px}
 
-/* ================= top close ================= */
+/* ================= top close (cross, top-right) ================= */
 .case-close{
   position:fixed;
-  top:22px; left:clamp(18px,3vw,34px);
+  top:22px; right:clamp(18px,3vw,34px);
   z-index:60;
-  width:30px; height:16px;
+  width:24px; height:24px;
   padding:0; margin:0;
   background:none; border:none; outline:none;
   cursor:default;
   -webkit-tap-highlight-color:transparent;
 }
-.case-close::before{
-  content:""; position:absolute; left:0; top:50%;
-  width:100%; height:1px; background:currentColor; color:var(--ink);
-  transform:translateY(-50%); opacity:.55;
+.case-close::before,
+.case-close::after{
+  content:"";
+  position:absolute;
+  top:50%; left:50%;
+  width:16px; height:1px;
+  background:var(--ink);
+  opacity:.55;
   transition:opacity .6s cubic-bezier(.22,1,.36,1);
 }
-.case-close.is-faded::before{opacity:.08}
+.case-close::before{transform:translate(-50%,-50%) rotate(45deg)}
+.case-close::after{transform:translate(-50%,-50%) rotate(-45deg)}
+.case-close.is-faded::before,
+.case-close.is-faded::after{opacity:.08}
 
 /* ================= layout ================= */
 .page{
@@ -165,13 +172,11 @@ h1{
 }
 
 /* ================= bottom actions ================= */
-/* ================= bottom actions ================= */
-/* ================= bottom actions ================= */
 .case-actions {
   margin: 4rem 0 0;
   padding: 0;
   display: flex;
-  justify-content: center; /* Центрируем кнопки */
+  justify-content: center;
   gap: 2rem;
   align-items: center;
   flex-wrap: wrap;
@@ -213,7 +218,6 @@ h1{
     font-family:var(--font-title);
     font-weight:400;
     font-size:clamp(3rem,13vw,4.8rem); line-height:1; letter-spacing:-.03em;
-  }
   }
   .h1-first{
     display:block; font-size:.38em; font-style:italic; font-weight:400;
@@ -408,6 +412,9 @@ h1{
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/delaunator@5.0.0/delaunator.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 (function () {
   'use strict';
@@ -428,7 +435,6 @@ h1{
   (function heroIntro() {
     var tl = gsap.timeline();
     
-    // Шапка собирается из хаоса
     tl.fromTo(['.hero .eyebrow', '.hero h1', '.hero .dates', '.hero .hero-rule'],
       { 
         opacity: 0, 
@@ -439,7 +445,6 @@ h1{
       { opacity: 1, x: 0, y: 0, rotation: 0, duration: 2, stagger: 0.1, ease: "elastic.out(1, 0.7)" }
     );
 
-    // Первый абзац подтягивается
     tl.fromTo('#p1', 
       { opacity: 0, y: 50, rotation: -2 },
       { opacity: 1, y: 0, rotation: 0, duration: 2, ease: "elastic.out(1, 0.8)" },
@@ -448,12 +453,12 @@ h1{
   })();
 
   // ============================================================
-  // close-line fade
+  // close cross fade
   // ============================================================
-  var closeLine = $('#case-close');
+  var closeEl = $('#case-close');
   window.addEventListener('scroll', function () {
-    if (window.scrollY > 40) closeLine.classList.add('is-faded');
-    else closeLine.classList.remove('is-faded');
+    if (window.scrollY > 40) closeEl.classList.add('is-faded');
+    else closeEl.classList.remove('is-faded');
   }, { passive: true });
 
   // ============================================================
@@ -582,7 +587,6 @@ h1{
     var body = 'Ссылка: ' + location.href;
     location.href = 'mailto:?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
   }
- 
 
   // ============================================================
   // desktop drag-to-scroll
@@ -617,6 +621,318 @@ h1{
   }
 
   setTimeout(function () { fab.classList.add('show'); }, 2500);
+
+  // ============================================================
+  // SHATTER SYSTEM — copied from 160926, adapted for page capture
+  // ============================================================
+  var TWO_PI = 2 * Math.PI;
+
+  var imageWidth  = window.innerWidth;
+  var imageHeight = window.innerHeight;
+  var cameraStart = 3.5 * imageHeight;
+
+  var scene, camera, renderer, group;
+  var clickPosition = [imageWidth / 2, imageHeight / 2];
+  var vertices = [];
+  var indices = [];
+  var activeShards = [];
+  var shatterBusy = false;
+
+  function randomRange(a, b) { return a + (b - a) * Math.random(); }
+  function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
+  function easeCubicIn(t)  { return t * t * t; }
+  function easeCubicOut(t) { return 1 - Math.pow(1 - t, 3); }
+  function getRandomWallDepth() { return Math.floor(500 * Math.random()) + 100; }
+
+  function initShatter() {
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x000000);
+
+    var fov = 2 * Math.atan(imageHeight / (2 * cameraStart)) * (180 / Math.PI);
+    camera = new THREE.PerspectiveCamera(fov, imageWidth / imageHeight, 1, 20000);
+    camera.position.set(0, 0, cameraStart);
+    scene.add(camera);
+
+    var light = new THREE.PointLight(0xffffff, 1);
+    camera.add(light);
+
+    group = new THREE.Group();
+    group.position.set(-0.5 * imageWidth, -0.5 * imageHeight, 0);
+    scene.add(group);
+
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(imageWidth, imageHeight);
+    renderer.domElement.style.position = 'fixed';
+    renderer.domElement.style.top = '0';
+    renderer.domElement.style.left = '0';
+    renderer.domElement.style.width = '100%';
+    renderer.domElement.style.height = '100%';
+    renderer.domElement.style.zIndex = '999';
+    renderer.domElement.style.display = 'none';
+    renderer.domElement.style.pointerEvents = 'none';
+    document.body.appendChild(renderer.domElement);
+
+    window.addEventListener('resize', onShatterResize, false);
+    animateShatter();
+  }
+
+  function onShatterResize() {
+    imageWidth  = window.innerWidth;
+    imageHeight = window.innerHeight;
+    cameraStart = 3.5 * imageHeight;
+    if (camera) {
+      camera.aspect = imageWidth / imageHeight;
+      camera.fov = 2 * Math.atan(imageHeight / (2 * cameraStart)) * (180 / Math.PI);
+      camera.updateProjectionMatrix();
+    }
+    if (group) {
+      group.position.x = -0.5 * imageWidth;
+      group.position.y = -0.5 * imageHeight;
+    }
+    if (renderer) renderer.setSize(imageWidth, imageHeight);
+  }
+
+  function triangulate() {
+    vertices = [];
+    var rings = [
+      { r: imageWidth / 12, c: 12 },
+      { r: imageWidth / 8,  c: 12 },
+      { r: imageWidth / 4,  c: 12 },
+      { r: imageWidth,      c: 12 }
+    ];
+    var cx = clickPosition[0];
+    var cy = clickPosition[1];
+    vertices.push([cx, cy]);
+
+    for (var ri = 0; ri < rings.length; ri++) {
+      var ring = rings[ri];
+      var spread = 0.25 * ring.r;
+      for (var h = 0; h < ring.c; h++) {
+        var x = Math.cos(h / ring.c * TWO_PI) * ring.r + cx + randomRange(-spread, spread);
+        var y = Math.sin(h / ring.c * TWO_PI) * ring.r + cy + randomRange(-spread, spread);
+        vertices.push([x, y]);
+      }
+    }
+
+    for (var i = 0; i < vertices.length; i++) {
+      vertices[i][0] = clamp(vertices[i][0], 0, imageWidth);
+      vertices[i][1] = clamp(vertices[i][1], 0, imageHeight);
+    }
+
+    var flat = new Float64Array(vertices.length * 2);
+    for (var k = 0; k < vertices.length; k++) {
+      flat[k * 2]     = vertices[k][0];
+      flat[k * 2 + 1] = vertices[k][1];
+    }
+    var d = new Delaunator(flat);
+    indices = Array.prototype.slice.call(d.triangles);
+  }
+
+  function shatter() {
+    var frontBox = null;
+    var frontZ = -Infinity;
+    scene.traverse(function (obj) {
+      if (obj.userData && obj.userData.isWall && obj.position.z > frontZ) {
+        frontZ = obj.position.z;
+        frontBox = obj;
+      }
+    });
+    if (!frontBox) return;
+
+    var depth = frontBox.userData.depth;
+    var tex = frontBox.userData.texture;
+
+    scene.remove(frontBox);
+    frontBox.geometry.dispose();
+    var oldMats = Array.isArray(frontBox.material) ? frontBox.material : [frontBox.material];
+    for (var i = 0; i < oldMats.length; i++) oldMats[i].dispose();
+
+    var sideColor = new THREE.Color(0xfbf2ed).multiplyScalar(0.82);
+
+    var batch = {
+      tex: tex,
+      frontMat: new THREE.MeshBasicMaterial({ map: tex }),
+      sideMat: new THREE.MeshPhongMaterial({ color: sideColor }),
+      count: 0
+    };
+
+    var extrudeOpts = {
+      depth: depth,
+      bevelEnabled: false,
+      bevelSegments: 1,
+      steps: 1,
+      bevelSize: 0,
+      bevelThickness: 0
+    };
+
+    var dur = 420;
+    var zBase = frontZ - depth / 2;
+
+    for (var o = 0; o < indices.length; o += 3) {
+      var A = vertices[indices[o]];
+      var B = vertices[indices[o + 1]];
+      var C = vertices[indices[o + 2]];
+
+      var shape = new THREE.Shape();
+      shape.moveTo(A[0], A[1]);
+      shape.lineTo(B[0], B[1]);
+      shape.lineTo(C[0], C[1]);
+      shape.closePath();
+
+      var geo;
+      try {
+        geo = new THREE.ExtrudeGeometry(shape, extrudeOpts);
+      } catch (err) { continue; }
+
+      var pos = geo.attributes.position;
+      var uvArr = new Float32Array(pos.count * 2);
+      for (var j = 0; j < pos.count; j++) {
+        uvArr[j * 2]     = pos.getX(j) / imageWidth;
+        uvArr[j * 2 + 1] = pos.getY(j) / imageHeight;
+      }
+      geo.setAttribute('uv', new THREE.BufferAttribute(uvArr, 2));
+
+      var mesh = new THREE.Mesh(geo, [batch.frontMat, batch.sideMat]);
+      mesh.position.set(0, 0, zBase);
+      group.add(mesh);
+
+      var cx = (A[0] + B[0] + C[0]) / 3;
+      var cy = (A[1] + B[1] + C[1]) / 3;
+      var dx = cx - clickPosition[0];
+      var dy = cy - clickPosition[1];
+      var p = Math.sqrt(dx * dx + dy * dy);
+
+      var delay = 0.0012 * p * randomRange(0.9, 1.1);
+
+      batch.count++;
+      activeShards.push({
+        mesh: mesh,
+        startY: mesh.position.y,
+        t0: performance.now() + delay * 1000,
+        dur: dur,
+        batch: batch
+      });
+    }
+
+    vertices = [];
+    indices = [];
+  }
+
+  function updateShards() {
+    var now = performance.now();
+    for (var i = activeShards.length - 1; i >= 0; i--) {
+      var s = activeShards[i];
+      var t = (now - s.t0) / s.dur;
+      if (t < 0) continue;
+      var e = easeCubicIn(Math.min(t, 1));
+      s.mesh.position.y = s.startY - 3000 * e;
+      if (t >= 1) {
+        group.remove(s.mesh);
+        s.mesh.geometry.dispose();
+        activeShards.splice(i, 1);
+        s.batch.count--;
+        if (s.batch.count === 0) {
+          s.batch.tex.dispose();
+          s.batch.frontMat.dispose();
+          s.batch.sideMat.dispose();
+        }
+      }
+    }
+  }
+
+  function animateShatter() {
+    requestAnimationFrame(animateShatter);
+    updateShards();
+    if (renderer && scene && camera) renderer.render(scene, camera);
+  }
+
+  async function triggerShatter(clientX, clientY) {
+    if (shatterBusy) return;
+    shatterBusy = true;
+
+    try {
+      closeEl.style.visibility = 'hidden';
+      fab.style.visibility = 'hidden';
+      toastEl.style.visibility = 'hidden';
+
+      var captured = await html2canvas(document.body, {
+        width: window.innerWidth,
+        height: window.innerHeight,
+        windowWidth: window.innerWidth,
+        windowHeight: window.innerHeight,
+        scrollX: 0,
+        scrollY: window.scrollY,
+        useCORS: true,
+        scale: 1,
+        logging: false
+      });
+
+      closeEl.style.visibility = '';
+      fab.style.visibility = '';
+      toastEl.style.visibility = '';
+
+      renderer.domElement.style.display = 'block';
+
+      clickPosition[0] = clientX;
+      clickPosition[1] = imageHeight - clientY;
+
+      var tex = new THREE.CanvasTexture(captured);
+      tex.minFilter = THREE.LinearFilter;
+      tex.magFilter = THREE.LinearFilter;
+
+      var depth = getRandomWallDepth();
+      var geo = new THREE.BoxGeometry(imageWidth, imageHeight, depth);
+      var sideColor = new THREE.Color(0xfbf2ed).multiplyScalar(0.82);
+      var sideMat = new THREE.MeshPhongMaterial({ color: sideColor });
+      var mats = [
+        sideMat, sideMat, sideMat, sideMat,
+        new THREE.MeshBasicMaterial({ map: tex }),
+        sideMat
+      ];
+      var box = new THREE.Mesh(geo, mats);
+      box.position.z = -depth / 2;
+      box.userData.depth = depth;
+      box.userData.texture = tex;
+      box.userData.isWall = true;
+      scene.add(box);
+
+      renderer.render(scene, camera);
+
+      triangulate();
+      shatter();
+
+      var navT = setTimeout(function () {
+        window.location.href = 'index.html';
+      }, 3000);
+      (function checkAndNavigate() {
+        if (activeShards.length === 0) {
+          clearTimeout(navT);
+          window.location.href = 'index.html';
+        } else {
+          setTimeout(checkAndNavigate, 50);
+        }
+      })();
+
+    } catch (err) {
+      closeEl.style.visibility = '';
+      fab.style.visibility = '';
+      toastEl.style.visibility = '';
+      window.location.href = 'index.html';
+    }
+  }
+
+  if (typeof THREE !== 'undefined' && typeof Delaunator !== 'undefined' && typeof html2canvas !== 'undefined') {
+    initShatter();
+  }
+
+  closeEl.addEventListener('click', function (e) {
+    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    if (typeof THREE === 'undefined' || typeof Delaunator === 'undefined' || typeof html2canvas === 'undefined') return;
+    e.preventDefault();
+    triggerShatter(e.clientX, e.clientY);
+  });
+
 })();
 </script>
 </body>
