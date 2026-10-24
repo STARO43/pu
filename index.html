@@ -60,7 +60,7 @@ a,button{cursor:default}
    Слой лежит ПОД #stage; виден только когда #stage пустой/скрыт.
    ============================================================ */
 #fallback{
-  position:fixed;inset:0;z-index:-1;
+  position:fixed;inset:0;z-index:1;
   background:#0a0806 url('./pushkin.jpg') center/cover no-repeat;
   filter:brightness(0.55) contrast(1.02);
   opacity:0;
@@ -85,7 +85,7 @@ body.gl-broken  #stage{ display:none; }
    STAGE
    ============================================================ */
 #stage{
-  position:fixed;inset:0;z-index:0;background:#0a0806;
+  position:fixed;inset:0;z-index:2;background:#0a0806;
   transition:transform 1.8s cubic-bezier(.16,1,.3,1),filter 1.8s ease,opacity 1.2s ease;
 }
 #stage canvas{display:block;width:100%;height:100%}
