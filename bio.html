@@ -9,8 +9,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..500&family=Literata:ital,opsz,wght@0,7..72,400..500;1,7..72,400&family=Newsreader:ital,opsz,wght@0,6..72,400..500;1,6..72,400&family=Yeseva+One&display=swap" rel="stylesheet">
-<script>document.documentElement.classList.replace('no-js','js');</script>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..500&amp;family=Literata:ital,opsz,wght@0,7..72,400..500;1,7..72,400&amp;family=Newsreader:ital,opsz,wght@0,6..72,400..500;1,6..72,400&amp;family=Yeseva+One&amp;display=swap" rel="stylesheet"><script>document.documentElement.classList.replace('no-js','js');</script>
 
 <style>
 :root{
@@ -435,13 +434,21 @@ h1{
   var KEY = 'pushkin.marks.v15';
   var FINE_POINTER = window.matchMedia('(pointer: fine)').matches;
 
+  // ============================================================
+  // Shatter tuning: mobile is slower
+  // ============================================================
+  var IS_MOBILE = window.matchMedia('(pointer: coarse)').matches ||
+                  window.innerWidth < 768;
+  var SHATTER_TIME_SCALE  = IS_MOBILE ? 2.1 : 1.0;
+  var SHATTER_DELAY_SCALE = IS_MOBILE ? 1.8 : 1.0;
+  var SHATTER_MAX_WAIT    = IS_MOBILE ? 6000 : 3500;
+
   var paras = $$('.para');
   var byId = {};
   paras.forEach(function (p) { byId[p.id] = p; });
 
   // ============================================================
   // Preload reveal + hero animation
-  // Waits for fonts (or 2s), then reveals body and runs GSAP.
   // ============================================================
   function runHeroIntro() {
     document.documentElement.classList.remove('preload');
@@ -653,7 +660,7 @@ h1{
   setTimeout(function () { fab.classList.add('show'); }, 2500);
 
   // ============================================================
-  // SHATTER SYSTEM — copied from 160926, adapted for page capture
+  // SHATTER SYSTEM
   // ============================================================
   var TWO_PI = 2 * Math.PI;
 
@@ -796,7 +803,7 @@ h1{
       bevelThickness: 0
     };
 
-    var dur = 420;
+    var dur = 420 * SHATTER_TIME_SCALE;
     var zBase = frontZ - depth / 2;
 
     for (var o = 0; o < indices.length; o += 3) {
@@ -833,7 +840,7 @@ h1{
       var dy = cy - clickPosition[1];
       var p = Math.sqrt(dx * dx + dy * dy);
 
-      var delay = 0.0012 * p * randomRange(0.9, 1.1);
+      var delay = 0.0012 * p * randomRange(0.9, 1.1) * SHATTER_DELAY_SCALE;
 
       batch.count++;
       activeShards.push({
@@ -878,79 +885,100 @@ h1{
   }
 
   async function triggerShatter(clientX, clientY) {
-    if (shatterBusy) return;
-    shatterBusy = true;
+  if (shatterBusy) return;
+  shatterBusy = true;
 
-    try {
-      closeEl.style.visibility = 'hidden';
-      fab.style.visibility = 'hidden';
-      toastEl.style.visibility = 'hidden';
+  var scrollX = window.scrollX || window.pageXOffset || 0;
+  var scrollY = window.scrollY || window.pageYOffset || 0;
+  var vw = window.innerWidth;
+  var vh = window.innerHeight;
+  var docEl = document.documentElement;
 
-      var captured = await html2canvas(document.body, {
-        width: window.innerWidth,
-        height: window.innerHeight,
-        windowWidth: window.innerWidth,
-        windowHeight: window.innerHeight,
-        scrollX: 0,
-        scrollY: window.scrollY,
-        useCORS: true,
-        scale: 1,
-        logging: false
-      });
+  // Прячем только служебные fixed-элементы
+  var hiddenEls = [closeEl, fab, toastEl];
+  hiddenEls.forEach(function (el) {
+    if (el) el.style.visibility = 'hidden';
+  });
 
-      closeEl.style.visibility = '';
-      fab.style.visibility = '';
-      toastEl.style.visibility = '';
+  try {
+    // Захватываем регион viewport, НЕ трогая скролл страницы.
+    // x/y — смещение региона в координатах документа.
+    // scrollX/scrollY — внутренний скролл html2canvas (не трогаем).
+    var captured = await html2canvas(document.body, {
+      width: vw,
+      height: vh,
+      windowWidth: vw,
+      windowHeight: Math.max(docEl.scrollHeight, vh),
+      x: scrollX,
+      y: scrollY,
+      scrollX: 0,
+      scrollY: 0,
+      useCORS: true,
+      scale: 1,
+      logging: false,
+      backgroundColor: '#fbf2ed',
+      ignoreElements: function (el) {
+        return el === renderer.domElement ||
+               el === closeEl ||
+               el === fab ||
+               el === toastEl;
+      }
+    });
 
-      renderer.domElement.style.display = 'block';
+    // Показываем THREE-канвас со снимком viewport.
+    // Скролл страницы не менялся — пользователь ничего не заметил.
+    renderer.domElement.style.display = 'block';
 
-      clickPosition[0] = clientX;
-      clickPosition[1] = imageHeight - clientY;
+    clickPosition[0] = clientX;
+    clickPosition[1] = vh - clientY;
 
-      var tex = new THREE.CanvasTexture(captured);
-      tex.minFilter = THREE.LinearFilter;
-      tex.magFilter = THREE.LinearFilter;
+    var tex = new THREE.CanvasTexture(captured);
+    tex.minFilter = THREE.LinearFilter;
+    tex.magFilter = THREE.LinearFilter;
 
-      var depth = getRandomWallDepth();
-      var geo = new THREE.BoxGeometry(imageWidth, imageHeight, depth);
-      var sideColor = new THREE.Color(0xfbf2ed).multiplyScalar(0.82);
-      var sideMat = new THREE.MeshPhongMaterial({ color: sideColor });
-      var mats = [
-        sideMat, sideMat, sideMat, sideMat,
-        new THREE.MeshBasicMaterial({ map: tex }),
-        sideMat
-      ];
-      var box = new THREE.Mesh(geo, mats);
-      box.position.z = -depth / 2;
-      box.userData.depth = depth;
-      box.userData.texture = tex;
-      box.userData.isWall = true;
-      scene.add(box);
+    var depth = getRandomWallDepth();
+    var geo = new THREE.BoxGeometry(vw, vh, depth);
+    var sideColor = new THREE.Color(0xfbf2ed).multiplyScalar(0.82);
+    var sideMat = new THREE.MeshPhongMaterial({ color: sideColor });
+    var mats = [
+      sideMat, sideMat, sideMat, sideMat,
+      new THREE.MeshBasicMaterial({ map: tex }),
+      sideMat
+    ];
+    var box = new THREE.Mesh(geo, mats);
+    box.position.z = -depth / 2;
+    box.userData.depth = depth;
+    box.userData.texture = tex;
+    box.userData.isWall = true;
+    scene.add(box);
 
-      renderer.render(scene, camera);
+    // Форсируем композит кадра: 2 rAF достаточно, чтобы WebGL-канвас
+    // гарантированно оказался на экране до того, как вернём body.
+    renderer.render(scene, camera);
+    await new Promise(function (r) {
+      requestAnimationFrame(function () { requestAnimationFrame(r); });
+    });
 
-      triangulate();
-      shatter();
+    hiddenEls.forEach(function (el) { if (el) el.style.visibility = ''; });
 
-      var navT = setTimeout(function () {
+    triangulate();
+    shatter();
+
+    var startedAt = performance.now();
+    (function checkAndNavigate() {
+      var elapsed = performance.now() - startedAt;
+      if (activeShards.length === 0 || elapsed > SHATTER_MAX_WAIT) {
         window.location.href = 'index.html';
-      }, 3000);
-      (function checkAndNavigate() {
-        if (activeShards.length === 0) {
-          clearTimeout(navT);
-          window.location.href = 'index.html';
-        } else {
-          setTimeout(checkAndNavigate, 50);
-        }
-      })();
+      } else {
+        setTimeout(checkAndNavigate, 50);
+      }
+    })();
 
-    } catch (err) {
-      closeEl.style.visibility = '';
-      fab.style.visibility = '';
-      toastEl.style.visibility = '';
-      window.location.href = 'index.html';
-    }
+  } catch (err) {
+    hiddenEls.forEach(function (el) { if (el) el.style.visibility = ''; });
+    window.location.href = 'index.html';
   }
+}
 
   if (typeof THREE !== 'undefined' && typeof Delaunator !== 'undefined' && typeof html2canvas !== 'undefined') {
     initShatter();
@@ -965,5 +993,9 @@ h1{
 
 })();
 </script>
+
+</body>
+</html>
+
 </body>
 </html>
