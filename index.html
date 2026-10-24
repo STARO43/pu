@@ -581,7 +581,7 @@ if (document.body.classList.contains('no-webgl')){
       uniforms.uTime.value = elapsed;
 
       if (revealStart > 0) {
-        const raw = (performance.now() - revealStart) / 2400;
+        const raw = (performance.now() - revealStart) / 2000;
         uniforms.uReveal.value = ease.expoOut(clamp(raw, 0, 1));
       }
 
