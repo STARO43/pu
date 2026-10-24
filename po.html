@@ -1123,7 +1123,7 @@ const stackH = pxToWorld(CONFIG.stackGap);
   function startExplode() {
     if (exploded) return;
     exploded = true;
-    autoSpin = true;
+    autoSpin = false;
 
     tiles.forEach((t) => {
       t.expStartPos = t.mesh.position.clone();
