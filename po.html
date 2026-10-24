@@ -1640,9 +1640,7 @@ const stackH = pxToWorld(CONFIG.stackGap);
     sRenderer.domElement.style.zIndex = "999";
     sRenderer.domElement.style.display = "none";
     sRenderer.domElement.style.pointerEvents = "none";
-    sRenderer.domElement.style.background =
-      "radial-gradient(ellipse 92% 88% at 50% 50%, rgba(0,0,0,0) 60%, rgba(42,34,28,0.10) 82%, rgba(42,34,28,0.22) 100%), " +
-      "radial-gradient(ellipse 90% 85% at 50% 50%, #f8f2e6 0%, #f2e9d9 45%, #e4d6bf 75%, #c9b89e 100%)";
+       sRenderer.domElement.style.background = "#0d0b0a";
     document.body.appendChild(sRenderer.domElement);
 
     window.addEventListener("resize", onShatterResize, false);
