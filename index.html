@@ -56,33 +56,6 @@ body.media-on .menu-link .label{ color:transparent; }
 }
 #canvas-layer.ready{ opacity:1; }
 #canvas-layer canvas{ display:block; width:100%; height:100%; }
-
-#controls{
-  position:fixed;z-index:30;
-  left:50%;bottom:clamp(16px,3.5vh,40px);
-  transform:translateX(-50%);
-  display:flex;gap:8px;
-  padding:8px 12px;
-  background:rgba(12,9,7,0.60);
-  border:1px solid rgba(255,200,150,0.10);
-  border-radius:999px;
-  backdrop-filter:blur(12px);
-}
-.fx-btn{
-  appearance:none;border:1px solid rgba(255,200,150,0.18);
-  background:rgba(255,220,180,0.04);
-  color:rgba(244,232,216,0.82);
-  font-family:'Yeseva One', serif;
-  font-size:clamp(0.6rem,1.4vw,0.78rem);
-  letter-spacing:0.12em;text-transform:uppercase;
-  padding:clamp(6px,1vh,9px) clamp(10px,1.8vw,18px);
-  border-radius:999px;cursor:pointer;
-}
-.fx-btn.active{
-  background:rgba(255,180,110,0.18);
-  border-color:rgba(255,180,110,0.60);
-  color:#ffe6cc;
-}
 </style>
 </head>
 <body>
@@ -104,30 +77,23 @@ body.media-on .menu-link .label{ color:transparent; }
 
 <video id="src-video" src="./1.mp4" muted autoplay loop playsinline preload="auto" style="position:fixed;left:-9999px;top:-9999px;width:2px;height:2px;opacity:0;pointer-events:none;"></video>
 
-<div id="controls">
-  <button class="fx-btn active" data-mode="video" type="button">Видео</button>
-  <button class="fx-btn" data-mode="off" type="button">Выкл</button>
-</div>
-
 <script>
 (function(){
   'use strict';
 
-  var menu    = document.getElementById('menu');
-  var layer   = document.getElementById('canvas-layer');
-  var canvas  = layer.querySelector('canvas');
-  var ctx     = canvas.getContext('2d');
-  var video   = document.getElementById('src-video');
-  var links   = menu.querySelectorAll('.menu-link');
-  var buttons = document.querySelectorAll('.fx-btn');
+  var menu   = document.getElementById('menu');
+  var layer  = document.getElementById('canvas-layer');
+  var canvas = layer.querySelector('canvas');
+  var ctx    = canvas.getContext('2d');
+  var video  = document.getElementById('src-video');
+  var links  = menu.querySelectorAll('.menu-link');
 
-  var mode = 'video';
   var dpr  = Math.min(window.devicePixelRatio || 1, 2);
   var W = 0, H = 0;
-  var lines = []; // {text, x, y, fontSize}
+  var lines = [];
   var rafId = null;
+  var running = false;
 
-  // --- Сбор координат слов в системе меню ---
   function measure(){
     var mr = menu.getBoundingClientRect();
     W = Math.max(1, Math.round(mr.width));
@@ -153,16 +119,15 @@ body.media-on .menu-link .label{ color:transparent; }
     });
   }
 
-  // --- Отрисовка кадра: видео + текст как «окно» ---
   function draw(){
+    if (!running) return;
     rafId = requestAnimationFrame(draw);
-    if (mode !== 'video' || video.readyState < 2) return;
+    if (video.readyState < 2) return;
 
     ctx.setTransform(1,0,0,1,0,0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.setTransform(dpr,0,0,dpr,0,0);
 
-    // 1. Рисуем видео на весь холст, object-fit: cover
     var vw = video.videoWidth  || 1;
     var vh = video.videoHeight || 1;
     var scale = Math.max(W / vw, H / vh);
@@ -170,20 +135,16 @@ body.media-on .menu-link .label{ color:transparent; }
     var dh = vh * scale;
     var dx = (W - dw) / 2;
     var dy = (H - dh) / 2;
+
     ctx.globalCompositeOperation = 'source-over';
     ctx.drawImage(video, dx, dy, dw, dh);
 
-    // 2. Оставляем только пиксели, попавшие в текст (destination-in)
     ctx.globalCompositeOperation = 'destination-in';
     ctx.fillStyle = '#fff';
     ctx.textBaseline = 'top';
 
     lines.forEach(function(l){
-      // ВАЖНО: тот же шрифт и размер, что и в меню
       ctx.font = '400 ' + l.fontSize + "px 'Yeseva One', serif";
-      // Компенсация: getBoundingClientRect даёт верх глифа,
-      // а fillText с textBaseline=top ставит по верхней линии шрифта.
-      // Небольшая поправка по line-height, чтобы совпало с label.
       var lineHeight = l.fontSize * 1.05;
       var yOffset = (lineHeight - l.fontSize) * 0.5;
       ctx.fillText(l.text, l.x, l.y + yOffset);
@@ -193,42 +154,28 @@ body.media-on .menu-link .label{ color:transparent; }
   }
 
   function start(){
-    if (rafId == null) draw();
+    if (running) return;
+    running = true;
     video.play().catch(function(){});
     document.body.classList.add('media-on');
     layer.classList.add('ready');
+    draw();
   }
 
   function stop(){
+    running = false;
     if (rafId != null){ cancelAnimationFrame(rafId); rafId = null; }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     document.body.classList.remove('media-on');
     layer.classList.remove('ready');
   }
 
-  // --- Переключатель ---
-  buttons.forEach(function(b){
-    b.addEventListener('click', function(){
-      mode = b.getAttribute('data-mode');
-      buttons.forEach(function(x){ x.classList.toggle('active', x === b); });
-      if (mode === 'video'){
-        if (video.readyState >= 2) start();
-        else video.addEventListener('loadeddata', start, { once:true });
-      } else {
-        stop();
-      }
-    });
-  });
-
-  // --- Старт после загрузки видео и шрифта ---
   function boot(){
     measure();
-    if (mode === 'video'){
-      if (video.readyState >= 2) start();
-      else {
-        video.addEventListener('loadeddata', start, { once:true });
-        video.addEventListener('error', function(){ stop(); }, { once:true });
-      }
+    if (video.readyState >= 2) start();
+    else {
+      video.addEventListener('loadeddata', start, { once:true });
+      video.addEventListener('error', function(){ stop(); }, { once:true });
     }
   }
 
@@ -238,7 +185,6 @@ body.media-on .menu-link .label{ color:transparent; }
     boot();
   }
 
-  // --- Ресайз ---
   var rt;
   window.addEventListener('resize', function(){
     clearTimeout(rt);
