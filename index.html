@@ -5,208 +5,93 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0a0806">
 <link rel="icon" href="/favicon.ico" sizes="any">
-
 <title>Пушкин. Главное</title>
-
-<meta name="description" content="Об Александре Пушкине. Каждый культурный человек должен здесь побывать.">
-<meta name="author" content="Пушкин. Главное">
-<meta name="robots" content="index, follow">
-
-<meta property="og:type"        content="website">
-<meta property="og:site_name"   content="Пушкин. Главное">
-<meta property="og:title"       content="Об Александре Пушкине. Каждый культурный человек должен здесь побывать">
-<meta property="og:description" content="Об Александре Пушкине. Каждый культурный человек должен здесь побывать.">
-<meta property="og:image"       content="./pushkin.jpg">
-<meta property="og:image:alt"   content="Портрет Александра Пушкина в тёмной комнате при свете свечи">
-<meta property="og:locale"      content="ru_RU">
-
-<meta name="twitter:card"        content="summary_large_image">
-<meta name="twitter:title"       content="Об Александре Пушкине. Каждый культурный человек должен здесь побывать">
-<meta name="twitter:description" content="Об Александре Пушкине. Каждый культурный человек должен здесь побывать.">
-<meta name="twitter:image"       content="./pushkin.jpg">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Yeseva+One&amp;display=swap" rel="stylesheet">
-
-<link rel="preload" as="image" href="./pushkin.jpg" fetchpriority="high">
-<link rel="preload" as="video" href="./1.mp4" as="video" type="video/mp4">
-
+<link href="https://fonts.googleapis.com/css2?family=Yeseva+One&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box}
-
 html,body{
   margin:0;height:100%;
   background:#0a0806;color:#fbf2ed;
-  overflow:hidden;overscroll-behavior:none;
-  -webkit-text-size-adjust:100%;
-  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
-  touch-action:none;cursor:default;
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
   user-select:none;-webkit-user-select:none;
-  -webkit-tap-highlight-color:transparent;
 }
-a,button{cursor:default}
-
-#fallback{
+#bg{
   position:fixed;inset:0;z-index:1;
   background:#0a0806 url('./pushkin.jpg') center/cover no-repeat;
-  filter:brightness(0.55) contrast(1.02);
-  opacity:0;
-  transition:opacity 1.2s ease, filter 1.4s cubic-bezier(.4,0,.2,1);
-  pointer-events:none;
+  filter:brightness(0.30) contrast(1.06) saturate(0.8);
 }
-#fallback::after{
-  content:'';
-  position:absolute;inset:0;
+#bg::after{
+  content:'';position:absolute;inset:0;
   background:
     radial-gradient(ellipse at 50% 100%, rgba(255,90,20,0.10), transparent 55%),
-    radial-gradient(circle at 50% 40%, transparent 30%, rgba(5,3,2,0.85) 100%);
+    radial-gradient(circle at 50% 40%, transparent 22%, rgba(5,3,2,0.94) 100%);
 }
-body.no-webgl #fallback,
-body.gl-broken #fallback{ opacity:1; }
-body.no-webgl #stage,
-body.gl-broken  #stage{ display:none; }
-body.is-menu #fallback{ filter:brightness(0.06) contrast(1.0); }
-
-#stage{
-  position:fixed;inset:0;z-index:2;background:#0a0806;
-}
-#stage canvas{display:block;width:100%;height:100%}
-
-.visually-hidden{
-  position:absolute !important;
-  width:1px;height:1px;
-  padding:0;margin:-1px;overflow:hidden;
-  clip:rect(0 0 0 0);clip-path:inset(50%);
-  white-space:nowrap;border:0;
-}
-
-/* ============================================================
-   MENU
-   ============================================================ */
 #menu{
   position:fixed;inset:0;z-index:10;
   display:flex;flex-direction:column;justify-content:center;
   padding-left:clamp(40px,8vw,140px);
-  pointer-events:none;
-  background:radial-gradient(circle at 30% 50%, rgba(20,15,10,0.72) 0%, rgba(10,8,6,0.92) 60%, rgba(3,2,1,0.995) 100%);
-  opacity:0;
-  transition:opacity 0.45s cubic-bezier(.4,0,.2,1);
-  overflow:hidden;
+  background:radial-gradient(circle at 30% 50%, rgba(20,15,10,0.55) 0%, rgba(10,8,6,0.82) 60%, rgba(3,2,1,0.97) 100%);
 }
-body.is-menu #menu{
-  opacity:1;
-  pointer-events:auto;
-  transition:opacity 1.0s cubic-bezier(.4,0,.2,1) 0.85s;
-}
-
 .menu-link{
-  position:relative;
-  display:inline-block;
-  width:fit-content;
-  max-width:100vw;
+  position:relative;display:inline-block;width:fit-content;
   text-decoration:none;
   font-family:'Yeseva One', serif;
   font-size:clamp(2.4rem,9vw,8.5rem);
   line-height:1.05;
   color:#f4e8d8;
   margin-bottom:clamp(1rem,3vw,2rem);
-  opacity:0;
-  filter:blur(8px);
-  transition:opacity 0.4s ease, filter 0.4s ease;
-  will-change:opacity, filter;
   z-index:3;
 }
-body.is-menu .menu-link{
-  opacity:1;
-  filter:blur(0);
-  transition:opacity 1.0s cubic-bezier(.4,0,.2,1), filter 1.0s cubic-bezier(.4,0,.2,1);
-}
-body.is-menu .menu-link:nth-child(1){ transition-delay:1.35s; }
-body.is-menu .menu-link:nth-child(2){ transition-delay:1.35s; }
+.menu-link .label{ display:inline-block; color:#f4e8d8; transition:color .4s ease; }
+body.media-on .menu-link .label{ color:transparent; }
 
-.menu-link .label{
-  display:inline-block;
-  color:#f4e8d8;
-  transition:color .5s ease;
-}
-
-/* Когда видео активно — текст становится невидимым,
-   остаётся только геометрия для кликов и доступности */
-body.media-on .menu-link .label{
-  color:transparent;
-  -webkit-text-fill-color:transparent;
-}
-
-/* SVG-слой: один на всё меню. Видео лежит на всей площади меню,
-   а слова «вырезаются» из него маской. */
-#menu .media-svg{
-  position:absolute;
-  left:0;top:0;
-  width:100%;height:100%;
-  overflow:visible;
+#canvas-layer{
+  position:fixed;inset:0;z-index:5;
   pointer-events:none;
   opacity:0;
-  transition:opacity .8s ease;
-  z-index:2;
+  transition:opacity .6s ease;
 }
-#menu .media-svg.ready{ opacity:1; }
-#menu .media-svg foreignObject,
-#menu .media-svg video{
-  display:block;
-}
+#canvas-layer.ready{ opacity:1; }
+#canvas-layer canvas{ display:block; width:100%; height:100%; }
 
-#noscript-fallback{
-  position:fixed;inset:0;z-index:50;
-  display:none;
-  align-items:center;justify-content:center;
-  flex-direction:column;
-  background:#0a0806 url('./pushkin.jpg') center/cover no-repeat;
-  text-align:center;
-  padding:24px;
+#controls{
+  position:fixed;z-index:30;
+  left:50%;bottom:clamp(16px,3.5vh,40px);
+  transform:translateX(-50%);
+  display:flex;gap:8px;
+  padding:8px 12px;
+  background:rgba(12,9,7,0.60);
+  border:1px solid rgba(255,200,150,0.10);
+  border-radius:999px;
+  backdrop-filter:blur(12px);
 }
-#noscript-fallback::before{
-  content:'';position:absolute;inset:0;
-  background:rgba(5,3,2,0.72);
-}
-#noscript-fallback .inner{position:relative;z-index:1;max-width:520px}
-#noscript-fallback h2{
-  font-family:'Yeseva One', serif;font-weight:400;
-  font-size:clamp(1.6rem, 4vw, 2.4rem);
-  margin:0 0 12px;color:#f4e8d8;
-}
-#noscript-fallback p{
+.fx-btn{
+  appearance:none;border:1px solid rgba(255,200,150,0.18);
+  background:rgba(255,220,180,0.04);
+  color:rgba(244,232,216,0.82);
   font-family:'Yeseva One', serif;
-  font-size:clamp(0.85rem, 1.5vw, 1rem);
-  letter-spacing:0.25em;text-transform:uppercase;
-  color:rgba(232,200,165,0.7);margin:0;
+  font-size:clamp(0.6rem,1.4vw,0.78rem);
+  letter-spacing:0.12em;text-transform:uppercase;
+  padding:clamp(6px,1vh,9px) clamp(10px,1.8vw,18px);
+  border-radius:999px;cursor:pointer;
 }
-noscript #noscript-fallback{ display:flex; }
-
-#blink-overlay{
-  position:fixed;inset:0;z-index:20;pointer-events:none;
-  display:flex;flex-direction:column;
-}
-.blink-lid{
-  flex:1;background:#0a0806;
-  transform:scaleY(0);transform-origin:top;
-}
-.blink-lid.bottom{ transform-origin:bottom; }
-
-@media (prefers-reduced-motion: reduce){
-  #menu{ transition-duration:0.3s; transition-delay:0s; }
-  .menu-link{ transition-duration:0.3s; filter:none; }
-  body.is-menu .menu-link{ transition-duration:0.3s; transition-delay:0s; }
+.fx-btn.active{
+  background:rgba(255,180,110,0.18);
+  border-color:rgba(255,180,110,0.60);
+  color:#ffe6cc;
 }
 </style>
 </head>
 <body>
 
-<h1 class="visually-hidden">Пушкин. Главное</h1>
+<div id="bg" aria-hidden="true"></div>
 
-<div id="fallback" aria-hidden="true"></div>
-
-<div id="stage" aria-hidden="true"></div>
+<div id="canvas-layer" aria-hidden="true">
+  <canvas></canvas>
+</div>
 
 <div id="menu">
   <a href="/bio" class="menu-link" id="link-bio">
@@ -215,652 +100,154 @@ noscript #noscript-fallback{ display:flex; }
   <a href="/po" class="menu-link" id="link-poems">
     <span class="label">Поэзия</span>
   </a>
-
-  <!-- Один SVG на всё меню. Видео позиционируется на всю площадь меню,
-       а слова «вырезаются» из него через clipPath. -->
-  <svg class="media-svg" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
 </div>
 
-<div id="blink-overlay" aria-hidden="true">
-  <div class="blink-lid top"></div>
-  <div class="blink-lid bottom"></div>
+<video id="src-video" src="./1.mp4" muted autoplay loop playsinline preload="auto" style="position:fixed;left:-9999px;top:-9999px;width:2px;height:2px;opacity:0;pointer-events:none;"></video>
+
+<div id="controls">
+  <button class="fx-btn active" data-mode="video" type="button">Видео</button>
+  <button class="fx-btn" data-mode="off" type="button">Выкл</button>
 </div>
 
-<noscript>
-  <div id="noscript-fallback">
-    <div class="inner">
-      <h2>Пушкин. Главное</h2>
-      <p>Для полного опыта включите JavaScript</p>
-    </div>
-  </div>
-</noscript>
-
 <script>
-/* ============================================================
-   РАННЯЯ ДЕТЕКЦИЯ
-   ============================================================ */
-(function(){
-  function webglSupported(){
-    try {
-      var c = document.createElement('canvas');
-      return !!(window.WebGLRenderingContext &&
-        (c.getContext('webgl') || c.getContext('experimental-webgl')));
-    } catch(e){ return false; }
-  }
-  if (!webglSupported()){
-    document.body.classList.add('no-webgl');
-  }
-  window.__HAS_IMPORTMAP__ = !!(
-    window.HTMLScriptElement &&
-    HTMLScriptElement.supports &&
-    HTMLScriptElement.supports('importmap')
-  );
-})();
-</script>
-
-<script>
-/* ============================================================
-   МЕНЮ: логика открытия/закрытия + моргание
-   ============================================================ */
-(function(){
-  var isMenuOpen = false;
-
-  function setMenu(open){
-    if (isMenuOpen === open) return;
-    isMenuOpen = open;
-    document.body.classList.toggle('is-menu', open);
-  }
-
-  var coarse = window.matchMedia('(hover: none), (pointer: coarse)').matches;
-
-  if (coarse) {
-    var TAP_MAX_MOVE = 12;
-    var TAP_MAX_TIME = 600;
-    var tapStartX = 0, tapStartY = 0, tapStartT = 0, tapTracking = false;
-
-    window.addEventListener('touchstart', function(e){
-      if (e.touches.length !== 1) { tapTracking = false; return; }
-      if (e.target.closest('a, button')) { tapTracking = false; return; }
-      var t = e.touches[0];
-      tapStartX = t.clientX; tapStartY = t.clientY; tapStartT = performance.now();
-      tapTracking = true;
-    }, { passive: true });
-
-    window.addEventListener('touchmove', function(e){
-      if (!tapTracking) return;
-      if (e.touches.length !== 1) { tapTracking = false; return; }
-      var t = e.touches[0];
-      var dx = t.clientX - tapStartX;
-      var dy = t.clientY - tapStartY;
-      if (dx*dx + dy*dy > TAP_MAX_MOVE * TAP_MAX_MOVE) tapTracking = false;
-    }, { passive: true });
-
-    window.addEventListener('touchend', function(e){
-      if (!tapTracking) return;
-      tapTracking = false;
-      if (performance.now() - tapStartT > TAP_MAX_TIME) return;
-      if (e.target.closest('a, button')) return;
-      setMenu(!isMenuOpen);
-    }, { passive: true });
-
-    window.addEventListener('touchcancel', function(){ tapTracking = false; }, { passive: true });
-  } else {
-    window.addEventListener('dblclick', function(e){
-      if (e.target.closest('a')) return;
-      setMenu(!isMenuOpen);
-    });
-  }
-
-  var lids = document.querySelectorAll('.blink-lid');
-  var links = document.querySelectorAll('.menu-link');
-  links.forEach(function(link){
-    link.addEventListener('click', function(e){
-      e.preventDefault();
-      var href = link.getAttribute('href');
-      lids[0].style.transition = 'transform 0.35s ease-in';
-      lids[1].style.transition = 'transform 0.35s ease-in';
-      lids[0].style.transform = 'scaleY(1)';
-      lids[1].style.transform = 'scaleY(1)';
-      setTimeout(function(){ window.location.href = href; }, 380);
-    });
-  });
-})();
-</script>
-
-<script>
-/* ============================================================
-   ВИДЕО ВНУТРИ СЛОВ (1.mp4)
-   ————————————————
-   Один файл ./1.mp4 играет в ОБОИХ словах одновременно.
-   Как это сделано:
-   1) <svg> растянут на всё меню (#menu), viewBox = размер меню.
-   2) Для каждого слова создаётся <clipPath> с <text> в АБСОЛЮТНЫХ
-      координатах меню — то есть маска ровно по месту слова на экране.
-   3) Внутри <g clip-path="url(#...)"> лежит <foreignObject> с <video>,
-      растянутым на ВСЁ меню (x=0,y=0,w=menuW,h=menuH).
-      Видео одно и то же для обоих слов, но т.к. каждое слово
-      «смотрит» на свою область этого видео — поток выглядит единым
-      и естественным сквозь оба слова.
-   4) Видео синхронизируется: оба <video> используют один src,
-      браузер берёт файл из кэша; currentTime выравнивается.
-   5) Если видео не загрузилось — класс media-on не ставится,
-      слова остаются обычным текстом (не чёрный экран).
-   ============================================================ */
 (function(){
   'use strict';
 
-  var NS = 'http://www.w3.org/2000/svg';
-  var VIDEO_SRC = './1.mp4';
+  var menu    = document.getElementById('menu');
+  var layer   = document.getElementById('canvas-layer');
+  var canvas  = layer.querySelector('canvas');
+  var ctx     = canvas.getContext('2d');
+  var video   = document.getElementById('src-video');
+  var links   = menu.querySelectorAll('.menu-link');
+  var buttons = document.querySelectorAll('.fx-btn');
 
-  var menu = document.getElementById('menu');
-  var svg  = menu.querySelector('.media-svg');
-  var links = menu.querySelectorAll('.menu-link');
+  var mode = 'video';
+  var dpr  = Math.min(window.devicePixelRatio || 1, 2);
+  var W = 0, H = 0;
+  var lines = []; // {text, x, y, fontSize}
+  var rafId = null;
 
-  function build(){
-    if (!svg || !links.length) return;
+  // --- Сбор координат слов в системе меню ---
+  function measure(){
+    var mr = menu.getBoundingClientRect();
+    W = Math.max(1, Math.round(mr.width));
+    H = Math.max(1, Math.round(mr.height));
 
-    var menuRect = menu.getBoundingClientRect();
-    var mw = Math.max(1, Math.round(menuRect.width));
-    var mh = Math.max(1, Math.round(menuRect.height));
+    canvas.width  = Math.round(W * dpr);
+    canvas.height = Math.round(H * dpr);
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
 
-    svg.innerHTML = '';
-    svg.setAttribute('viewBox', '0 0 ' + mw + ' ' + mh);
-    svg.setAttribute('width', mw);
-    svg.setAttribute('height', mh);
-    svg.style.width  = mw + 'px';
-    svg.style.height = mh + 'px';
-
-    var defs = document.createElementNS(NS, 'defs');
-    svg.appendChild(defs);
-
-    // --- 1. Маски по словам, в абсолютных координатах меню ---
-    links.forEach(function(link, idx){
+    lines = [];
+    links.forEach(function(link){
       var label = link.querySelector('.label');
       var text  = label.textContent || '';
       var lr    = label.getBoundingClientRect();
       var fontSize = parseFloat(getComputedStyle(link).fontSize) || 48;
+      lines.push({
+        text: text,
+        x: lr.left - mr.left,
+        y: lr.top  - mr.top,
+        fontSize: fontSize
+      });
+    });
+  }
 
-      var x = lr.left - menuRect.left;
-      var y = lr.top  - menuRect.top;
+  // --- Отрисовка кадра: видео + текст как «окно» ---
+  function draw(){
+    rafId = requestAnimationFrame(draw);
+    if (mode !== 'video' || video.readyState < 2) return;
 
-      var uid = 'clip-' + (link.id || ('m' + idx));
-      var clip = document.createElementNS(NS, 'clipPath');
-      clip.setAttribute('id', uid);
-      clip.setAttribute('clipPathUnits', 'userSpaceOnUse');
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
 
-      var t = document.createElementNS(NS, 'text');
-      t.setAttribute('x', x);
-      t.setAttribute('y', y);
-      t.setAttribute('dominant-baseline', 'hanging');
-      t.setAttribute('font-family', "'Yeseva One', serif");
-      t.setAttribute('font-size', fontSize);
-      t.setAttribute('font-weight', '400');
-      t.textContent = text;
+    // 1. Рисуем видео на весь холст, object-fit: cover
+    var vw = video.videoWidth  || 1;
+    var vh = video.videoHeight || 1;
+    var scale = Math.max(W / vw, H / vh);
+    var dw = vw * scale;
+    var dh = vh * scale;
+    var dx = (W - dw) / 2;
+    var dy = (H - dh) / 2;
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.drawImage(video, dx, dy, dw, dh);
 
-      clip.appendChild(t);
-      defs.appendChild(clip);
+    // 2. Оставляем только пиксели, попавшие в текст (destination-in)
+    ctx.globalCompositeOperation = 'destination-in';
+    ctx.fillStyle = '#fff';
+    ctx.textBaseline = 'top';
+
+    lines.forEach(function(l){
+      // ВАЖНО: тот же шрифт и размер, что и в меню
+      ctx.font = '400 ' + l.fontSize + "px 'Yeseva One', serif";
+      // Компенсация: getBoundingClientRect даёт верх глифа,
+      // а fillText с textBaseline=top ставит по верхней линии шрифта.
+      // Небольшая поправка по line-height, чтобы совпало с label.
+      var lineHeight = l.fontSize * 1.05;
+      var yOffset = (lineHeight - l.fontSize) * 0.5;
+      ctx.fillText(l.text, l.x, l.y + yOffset);
     });
 
-    // --- 2. Видео-слой на всё меню + две группы с масками ---
-    var videos = [];
+    ctx.globalCompositeOperation = 'source-over';
+  }
 
-    links.forEach(function(link, idx){
-      var uid = 'clip-' + (link.id || ('m' + idx));
+  function start(){
+    if (rafId == null) draw();
+    video.play().catch(function(){});
+    document.body.classList.add('media-on');
+    layer.classList.add('ready');
+  }
 
-      var g = document.createElementNS(NS, 'g');
-      g.setAttribute('clip-path', 'url(#' + uid + ')');
+  function stop(){
+    if (rafId != null){ cancelAnimationFrame(rafId); rafId = null; }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    document.body.classList.remove('media-on');
+    layer.classList.remove('ready');
+  }
 
-      var fo = document.createElementNS(NS, 'foreignObject');
-      fo.setAttribute('x', '0');
-      fo.setAttribute('y', '0');
-      fo.setAttribute('width', mw);
-      fo.setAttribute('height', mh);
-
-      var video = document.createElement('video');
-      video.setAttribute('src', VIDEO_SRC);
-      video.setAttribute('muted', '');
-      video.setAttribute('autoplay', '');
-      video.setAttribute('loop', '');
-      video.setAttribute('playsinline', '');
-      video.setAttribute('preload', 'auto');
-      video.style.width = '100%';
-      video.style.height = '100%';
-      video.style.objectFit = 'cover';
-      video.style.display = 'block';
-      video.style.pointerEvents = 'none';
-
-      fo.appendChild(video);
-      g.appendChild(fo);
-      svg.appendChild(g);
-      videos.push(video);
+  // --- Переключатель ---
+  buttons.forEach(function(b){
+    b.addEventListener('click', function(){
+      mode = b.getAttribute('data-mode');
+      buttons.forEach(function(x){ x.classList.toggle('active', x === b); });
+      if (mode === 'video'){
+        if (video.readyState >= 2) start();
+        else video.addEventListener('loadeddata', start, { once:true });
+      } else {
+        stop();
+      }
     });
+  });
 
-    // --- 3. Синхронизация: оба видео держим на одном currentTime ---
-    if (videos.length > 1){
-      var master = videos[0];
-      var sync = function(){
-        for (var i = 1; i < videos.length; i++){
-          var v = videos[i];
-          if (Math.abs(v.currentTime - master.currentTime) > 0.05){
-            try { v.currentTime = master.currentTime; } catch(e){}
-          }
-          if (master.paused && !v.paused) v.pause();
-          if (!master.paused && v.paused) v.play().catch(function(){});
-        }
-        requestAnimationFrame(sync);
-      };
-      requestAnimationFrame(sync);
-    }
-
-    // --- 4. Показ SVG только после загрузки видео ---
-    var revealed = false;
-    function reveal(){
-      if (revealed) return;
-      revealed = true;
-      document.body.classList.add('media-on');
-      svg.classList.add('ready');
-      videos.forEach(function(v){ v.play().catch(function(){}); });
-    }
-    function fail(){
-      document.body.classList.remove('media-on');
-      svg.classList.remove('ready');
-      svg.innerHTML = '';
-    }
-
-    var first = videos[0];
-    if (first){
-      if (first.readyState >= 2) reveal();
+  // --- Старт после загрузки видео и шрифта ---
+  function boot(){
+    measure();
+    if (mode === 'video'){
+      if (video.readyState >= 2) start();
       else {
-        first.addEventListener('loadeddata', reveal, { once:true });
-        first.addEventListener('error', fail, { once:true });
+        video.addEventListener('loadeddata', start, { once:true });
+        video.addEventListener('error', function(){ stop(); }, { once:true });
       }
     }
   }
 
+  if (document.fonts && document.fonts.ready){
+    document.fonts.ready.then(boot);
+  } else {
+    boot();
+  }
+
+  // --- Ресайз ---
   var rt;
   window.addEventListener('resize', function(){
     clearTimeout(rt);
     rt = setTimeout(function(){
-      // Пересобираем только если меню уже показано/видимо, чтобы не терять кадр
-      build();
-    }, 180);
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      measure();
+    }, 150);
   });
-
-  if (document.fonts && document.fonts.ready){
-    document.fonts.ready.then(build);
-  } else {
-    build();
-  }
 })();
-</script>
-
-<script type="importmap">
-{
-  "imports": {
-    "three": "./vendor/three.module.js",
-    "three/addons/postprocessing/EffectComposer.js": "./vendor/jsm/postprocessing/EffectComposer.js",
-    "three/addons/postprocessing/RenderPass.js":     "./vendor/jsm/postprocessing/RenderPass.js",
-    "three/addons/postprocessing/ShaderPass.js":     "./vendor/jsm/postprocessing/ShaderPass.js",
-    "three/addons/postprocessing/Pass.js":           "./vendor/jsm/postprocessing/Pass.js",
-    "three/addons/postprocessing/MaskPass.js":       "./vendor/jsm/postprocessing/MaskPass.js",
-    "three/addons/shaders/CopyShader.js":            "./vendor/jsm/shaders/CopyShader.js",
-    "three/addons/shaders/LuminosityHighPassShader.js": "./vendor/jsm/shaders/LuminosityHighPassShader.js"
-  }
-}
-</script>
-
-<script type="module">
-const HAS_IMPORTMAP = window.__HAS_IMPORTMAP__ === true;
-const NO_WEBGL = document.body.classList.contains('no-webgl');
-
-if (!NO_WEBGL) {
-  let THREE, EffectComposer, RenderPass, ShaderPass;
-
-  try {
-    if (HAS_IMPORTMAP) {
-      THREE = await import('three');
-      ({ EffectComposer } = await import('three/addons/postprocessing/EffectComposer.js'));
-      ({ RenderPass }     = await import('three/addons/postprocessing/RenderPass.js'));
-      ({ ShaderPass }     = await import('three/addons/postprocessing/ShaderPass.js'));
-    } else {
-      THREE = await import('./vendor/three.module.js');
-    }
-  } catch (e) {
-    document.body.classList.add('gl-broken');
-    throw e;
-  }
-
-  const clamp = (v,a,b) => Math.min(b, Math.max(a, v));
-  const ease  = {
-    expoOut:    t => t >= 1 ? 1 : 1 - Math.pow(2, -10*t),
-    inOutCubic: t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2,
-    outCubic:   t => 1 - Math.pow(1 - t, 3),
-  };
-
-  /* ---------- renderer ---------- */
-  const host = document.getElementById('stage');
-  let renderer;
-  try {
-    renderer = new THREE.WebGLRenderer({
-      antialias:true, alpha:false, powerPreference:'high-performance'
-    });
-  } catch(e){
-    document.body.classList.add('gl-broken');
-    throw e;
-  }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-  renderer.setClearColor(0x0a0806, 1);
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.00;
-  renderer.domElement.style.cssText = 'display:block;width:100%;height:100%;';
-  host.appendChild(renderer.domElement);
-
-  const scene  = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-  camera.position.set(0, 0, 5);
-
-  /* ---------- shaders ---------- */
-  const vertexShader = /* glsl */`
-varying vec2 vUv;
-void main() {
-  vUv = uv;
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-}
-`;
-
-  const fragmentShader = /* glsl */`
-precision highp float;
-varying vec2 vUv;
-
-uniform sampler2D uMap;
-uniform vec2  uRes;
-uniform vec2  uImg;
-uniform float uTime;
-uniform float uReveal;
-uniform vec2  uParallax;
-uniform float uZoom;
-uniform vec2  uEyeUV;
-
-float hash1(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
-float noise(vec2 p) {
-  vec2 i = floor(p), f = fract(p);
-  vec2 u = f*f*(3.0 - 2.0*f);
-  return mix(mix(hash1(i), hash1(i+vec2(1,0)), u.x),
-             mix(hash1(i+vec2(0,1)), hash1(i+vec2(1,1)), u.x), u.y);
-}
-float fbm(vec2 p) {
-  float v = 0.0, a = 0.5;
-  for (int i = 0; i < 5; i++) { v += a * noise(p); p = p * 2.02 + 13.7; a *= 0.5; }
-  return v;
-}
-
-void main() {
-  float sa = uRes.x / uRes.y;
-  float ia = max(uImg.x / uImg.y, 0.0001);
-  float t  = uTime;
-  float zs = uZoom;
-
-  vec2 p = vec2((vUv.x - 0.5) * sa, vUv.y - 0.5);
-
-  float parFade = 1.0 - zs;
-  p.x += uParallax.x * 0.018 * parFade;
-  p.y += uParallax.y * 0.014 * parFade;
-
-  float breath = 1.0 + sin(t * 0.40) * 0.0032 + sin(t * 0.17 + 1.2) * 0.0014;
-  p /= breath;
-
-  float k = max(1.0, sa / ia) * 1.10;
-  vec2 uvBase = vec2(p.x / (ia * k) + 0.5, p.y / k + 0.5);
-  uvBase.x -= 0.035;
-
-  vec2  zc        = uEyeUV + vec2(-0.028, 0.004) * zs;
-  float zoomScale = pow(38.0, zs);
-  vec2  uv        = (uvBase - zc) / zoomScale + zc;
-  vec2  uvSafe    = clamp(uv, vec2(0.001), vec2(0.999));
-
-  vec3 col = texture2D(uMap, uvSafe).rgb;
-
-  vec2 bgUV = uvSafe * uImg * 0.06;
-  float surfaceNoise  = fbm(bgUV + vec2(t * 0.015));
-  float surfaceNoise2 = fbm(bgUV * 3.0 - vec2(t * 0.02));
-  float relief = (surfaceNoise - 0.5) * 0.45 + (surfaceNoise2 - 0.5) * 0.15;
-  col = col * (1.0 + relief);
-
-  col *= vec3(1.02, 0.98, 0.94);
-  col *= 0.74;
-
-  float flick = 0.82
-    + sin(t * 2.7) * 0.045
-    + sin(t * 6.9 + 1.3) * 0.038
-    + sin(t * 12.4 + 2.7) * 0.028
-    + (fbm(vec2(t * 2.2, 3.0)) - 0.5) * 0.15;
-
-  vec2 firePos = vec2(sa * 0.50, -0.60);
-  vec2 fd = p - firePos;
-  float fireDist = dot(fd, fd);
-
-  vec3 fireWarm = vec3(0.95, 0.36, 0.12);
-  vec3 fireDeep = vec3(0.70, 0.16, 0.05);
-  col += fireWarm * exp(-fireDist * 1.7) * flick * 0.090;
-  col += fireDeep * exp(-fireDist * 3.4) * flick * 0.055;
-
-  float fireMask = smoothstep(0.0, 0.55, exp(-fireDist * 2.0) * flick);
-  col *= mix(vec3(1.0), vec3(1.06, 0.86, 0.68), fireMask * 0.55);
-
-  float reflFire = exp(-fireDist * 1.5) * flick * 0.045;
-  col += vec3(1.0, 0.55, 0.28) * reflFire;
-
-  float cornerGlow = exp(-fireDist * 8.0) * flick;
-  col += vec3(1.0, 0.45, 0.15) * cornerGlow * 0.35;
-
-  float candle =
-      1.0
-    + sin(t * 7.3) * 0.018
-    + sin(t * 13.1 + 1.7) * 0.012
-    + sin(t * 3.3 + 0.5) * 0.008
-    + (fbm(vec2(t * 1.7, 7.0)) - 0.5) * 0.040;
-  col *= candle;
-  col *= mix(vec3(1.0), vec3(1.035, 0.995, 0.945), (candle - 1.0) * 6.0 + 0.5);
-
-  vec2 vc = p * vec2(0.85, 0.72);
-  float vd = length(vc);
-  col *= 1.0 - smoothstep(0.45, 1.10, vd) * 0.55;
-
-  float g = hash1(gl_FragCoord.xy + fract(t) * 137.0);
-  col += (g - 0.5) * 0.020;
-
-  vec2 eDiff = uv - uEyeUV;
-  float eDist = dot(eDiff, eDiff);
-  float eyeGlow = exp(-eDist * 55.0) * sin(zs * 3.14159265);
-  col += vec3(1.0, 0.74, 0.46) * eyeGlow * 0.38;
-
-  float halo = exp(-eDist * 6.0) * sin(zs * 3.14159265) * 0.10;
-  col += vec3(1.0, 0.55, 0.28) * halo;
-
-  col = mix(col, col * vec3(1.06, 0.94, 0.84), zs * 0.55);
-
-  float blackOut = smoothstep(0.72, 1.0, zs);
-  col *= (1.0 - blackOut);
-
-  col *= mix(0.35, 1.0, uReveal);
-
-  gl_FragColor = vec4(col, uReveal);
-}
-`;
-
-  const uniforms = {
-    uMap:      { value: null },
-    uRes:      { value: new THREE.Vector2(1, 1) },
-    uImg:      { value: new THREE.Vector2(1, 1) },
-    uTime:     { value: 0 },
-    uReveal:   { value: 0 },
-    uParallax: { value: new THREE.Vector2(0, 0) },
-    uZoom:     { value: 0 },
-    uEyeUV:    { value: new THREE.Vector2(0.34, 0.57) }
-  };
-
-  const material = new THREE.ShaderMaterial({
-    uniforms, vertexShader, fragmentShader,
-    transparent: true, depthWrite: false, depthTest: false
-  });
-
-  const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
-  plane.frustumCulled = false;
-  scene.add(plane);
-
-  const phTex = new THREE.DataTexture(new Uint8Array([20, 16, 12, 255]), 1, 1, THREE.RGBAFormat);
-  phTex.needsUpdate = true;
-  uniforms.uMap.value = phTex;
-
-  let composer = null;
-  let finalPass = null;
-
-  if (HAS_IMPORTMAP && EffectComposer && RenderPass && ShaderPass) {
-    composer = new EffectComposer(renderer);
-    composer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    composer.addPass(new RenderPass(scene, camera));
-
-    finalPass = new ShaderPass({
-      uniforms: {
-        tDiffuse: { value: null },
-        uTime:    { value: 0 },
-        uRes:     { value: new THREE.Vector2(1, 1) },
-        uGrain:   { value: 0.016 }
-      },
-      vertexShader: `
-varying vec2 vUv;
-void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }
-`,
-      fragmentShader: `
-precision highp float;
-varying vec2 vUv;
-uniform sampler2D tDiffuse;
-uniform float uTime;
-uniform vec2  uRes;
-uniform float uGrain;
-float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
-void main(){
-  vec3 col = texture2D(tDiffuse, vUv).rgb;
-  vec2 t = vUv * uRes;
-  float g1 = hash(t * 0.7 + fract(uTime * 8.0) * 100.0) - 0.5;
-  float g2 = hash(t * 0.3 + fract(uTime * 5.0) * 100.0) - 0.5;
-  float grain = g1 * 0.65 + g2 * 0.35;
-  col += grain * uGrain;
-  gl_FragColor = vec4(col, 1.0);
-}
-`
-    });
-    composer.addPass(finalPass);
-  }
-
-  function resize() {
-    const w = host.clientWidth || window.innerWidth;
-    const h = host.clientHeight || window.innerHeight;
-    if (!w || !h) return;
-    renderer.setSize(w, h, false);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-    const vh = 2 * Math.tan(camera.fov * Math.PI / 360) * camera.position.z;
-    const vw = vh * camera.aspect;
-    plane.scale.set(vw, vh, 1);
-    uniforms.uRes.value.set(w, h);
-    if (composer) composer.setSize(w, h);
-    if (finalPass) finalPass.uniforms.uRes.value.set(w, h);
-  }
-
-  const clock = new THREE.Clock();
-  let elapsed = 0;
-  let revealStart = -1;
-
-  const parallaxTarget  = new THREE.Vector2(0, 0);
-  const parallaxCurrent = new THREE.Vector2(0, 0);
-
-  new THREE.TextureLoader().load('pushkin.jpg', (tex) => {
-    tex.colorSpace = THREE.SRGBColorSpace;
-    tex.anisotropy = Math.min(16, renderer.capabilities.getMaxAnisotropy());
-    tex.minFilter = THREE.LinearMipmapLinearFilter;
-    tex.magFilter = THREE.LinearFilter;
-    tex.generateMipmaps = true;
-    if (uniforms.uMap.value && uniforms.uMap.value.dispose) uniforms.uMap.value.dispose();
-    uniforms.uMap.value = tex;
-    uniforms.uImg.value.set(tex.image.width || 1, tex.image.height || 1);
-    resize();
-    startReveal();
-  }, undefined, () => {
-    document.body.classList.add('gl-broken');
-    startReveal();
-  });
-
-  function startReveal() {
-    if (revealStart >= 0) return;
-    revealStart = performance.now();
-  }
-
-  window.addEventListener('pointermove', (e) => {
-    const cx = window.innerWidth / 2;
-    const cy = window.innerHeight / 2;
-    parallaxTarget.set((e.clientX - cx) / cx, (e.clientY - cy) / cy);
-  }, { passive: true });
-
-  let menuProgress = 0;
-  let anim = null;
-  let lastMenuOpen = false;
-
-  function setMenuProgress(target, dur, easing) {
-    anim = {
-      from:  menuProgress,
-      to:    target,
-      start: performance.now(),
-      dur:   dur,
-      ease:  easing
-    };
-  }
-
-  function tick() {
-    requestAnimationFrame(tick);
-
-    const dt = Math.min(0.05, clock.getDelta());
-    elapsed += dt;
-
-    uniforms.uTime.value = elapsed;
-
-    const menuOpen = document.body.classList.contains('is-menu');
-    if (menuOpen !== lastMenuOpen) {
-      lastMenuOpen = menuOpen;
-      if (menuOpen) {
-        setMenuProgress(1, 1800, ease.inOutCubic);
-      } else {
-        setMenuProgress(0, 1500, ease.outCubic);
-      }
-    }
-
-    if (anim) {
-      const t = clamp((performance.now() - anim.start) / anim.dur, 0, 1);
-      const e = anim.ease(t);
-      menuProgress = anim.from + (anim.to - anim.from) * e;
-      if (t >= 1) anim = null;
-    }
-    uniforms.uZoom.value = clamp(menuProgress, 0, 1);
-
-    if (revealStart > 0) {
-      const raw = (performance.now() - revealStart) / 2400;
-      uniforms.uReveal.value = ease.expoOut(clamp(raw, 0, 1));
-    }
-
-    parallaxCurrent.lerp(parallaxTarget, Math.min(1, dt * 2.5));
-    uniforms.uParallax.value.copy(parallaxCurrent);
-
-    if (finalPass) finalPass.uniforms.uTime.value = elapsed;
-    if (composer) composer.render();
-    else renderer.render(scene, camera);
-  }
-
-  resize();
-  if (window.ResizeObserver) new ResizeObserver(resize).observe(host);
-  else window.addEventListener('resize', resize);
-
-  requestAnimationFrame(tick);
-}
 </script>
 </body>
 </html>
