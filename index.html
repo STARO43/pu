@@ -30,6 +30,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Yeseva+One&amp;display=swap" rel="stylesheet">
 
 <link rel="preload" as="image" href="./pushkin.jpg" fetchpriority="high">
+<link rel="preload" as="video" href="/1.mp4" as="fetch" crossorigin>
 
 <style>
 *,*::before,*::after{box-sizing:border-box}
@@ -122,6 +123,71 @@ body.is-menu .menu-link{
 body.is-menu .menu-link:nth-child(1){ transition-delay:1.35s; }
 body.is-menu .menu-link:nth-child(2){ transition-delay:1.35s; }
 
+/* ---------- видео внутри букв ---------- */
+.menu-link__text{
+  display:inline;
+  transition:opacity .55s cubic-bezier(.4,0,.2,1);
+}
+.menu-link.is-ready .menu-link__text{ opacity:0; }
+
+/* нулевая метка базовой линии — нужна для точной отрисовки маски */
+.menu-link .bl{
+  display:inline-block;
+  width:0;height:0;
+  vertical-align:baseline;
+  pointer-events:none;
+}
+
+.menu-link__video{
+  position:absolute;
+  left:-0.14em; right:-0.14em;
+  top:-0.30em;  bottom:-0.34em;
+  opacity:0;
+  pointer-events:none;
+  overflow:hidden;
+  transition:opacity .60s cubic-bezier(.4,0,.2,1), filter .45s ease;
+  filter:drop-shadow(0 0 22px rgba(255,120,40,0.20));
+  will-change:opacity;
+}
+.menu-link.is-ready .menu-link__video{ opacity:1; }
+.menu-link.is-ready:hover .menu-link__video{
+  filter:drop-shadow(0 0 32px rgba(255,145,55,0.45)) brightness(1.10);
+}
+
+.menu-link__video video{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  display:block;
+  transform:scale(1.08);
+  animation:videoDrift 16s ease-in-out infinite alternate;
+  will-change:transform;
+}
+@keyframes videoDrift{
+  0%   { transform:scale(1.08) translate3d(-1.2%,-0.8%,0); }
+  100% { transform:scale(1.16) translate3d( 1.2%, 0.8%,0); }
+}
+
+.menu-link__sheen{
+  position:absolute; inset:0;
+  pointer-events:none;
+  background-image:linear-gradient(100deg,
+      rgba(255,255,255,0) 35%,
+      rgba(255,232,198,.70) 50%,
+      rgba(255,255,255,0) 65%);
+  background-size:300% 100%;
+  background-repeat:no-repeat;
+  background-position:-50% 0;
+  mix-blend-mode:screen;
+  animation:sheenMove 6.5s cubic-bezier(.4,0,.2,1) infinite;
+  will-change:background-position;
+}
+@keyframes sheenMove{
+  0%   { background-position:-50% 0; }
+  55%  { background-position:150% 0; }
+  100% { background-position:150% 0; }
+}
+
 #noscript-fallback{
   position:fixed;inset:0;z-index:50;
   display:none;
@@ -163,6 +229,8 @@ noscript #noscript-fallback{ display:flex; }
   #menu{ transition-duration:0.3s; transition-delay:0s; }
   .menu-link{ transition-duration:0.3s; filter:none; }
   body.is-menu .menu-link{ transition-duration:0.3s; transition-delay:0s; }
+  .menu-link__video video{ animation:none; transform:scale(1.08); }
+  .menu-link__sheen{ animation:none; opacity:.35; background-position:50% 0; }
 }
 </style>
 </head>
@@ -175,8 +243,23 @@ noscript #noscript-fallback{ display:flex; }
 <div id="stage" aria-hidden="true"></div>
 
 <div id="menu">
-<a href="/bio" class="menu-link" id="link-bio">Жизнь</a>
-<a href="/po" class="menu-link" id="link-poems">Поэзия</a>
+  <a href="/bio" class="menu-link" id="link-bio">
+    <span class="menu-link__text"><span class="bl" aria-hidden="true"></span>Жизнь</span>
+    <span class="menu-link__video" aria-hidden="true">
+      <video src="/1.mp4" muted loop playsinline preload="auto"
+             disablepictureinpicture tabindex="-1"></video>
+      <span class="menu-link__sheen"></span>
+    </span>
+  </a>
+
+  <a href="/po" class="menu-link" id="link-poems">
+    <span class="menu-link__text"><span class="bl" aria-hidden="true"></span>Поэзия</span>
+    <span class="menu-link__video" aria-hidden="true">
+      <video src="/1.mp4" muted loop playsinline preload="auto"
+             disablepictureinpicture tabindex="-1"></video>
+      <span class="menu-link__sheen"></span>
+    </span>
+  </a>
 </div>
 
 <div id="blink-overlay" aria-hidden="true">
@@ -231,10 +314,9 @@ noscript #noscript-fallback{ display:flex; }
     isMenuOpen = open;
     document.body.classList.toggle('is-menu', open);
   }
+  window.__setMenu = setMenu;
 
   var coarse = window.matchMedia('(hover: none), (pointer: coarse)').matches;
-  // Также тач-ноутбуки с мышью: если есть и touch, и точный указатель — оставляем dblclick,
-  // но добавим обработку первого тапа по пустому месту, чтобы не было «мёртвой зоны».
 
   if (coarse) {
     /* --- МОБИЛЬНЫЕ И ПЛАНШЕТЫ: одиночный тап --- */
@@ -292,6 +374,191 @@ noscript #noscript-fallback{ display:flex; }
       setTimeout(function(){ window.location.href = href; }, 380);
     });
   });
+})();
+</script>
+
+<script>
+/* ============================================================
+   ВИДЕО ВНУТРИ БУКВ
+   Маска строится на canvas из реального текста (тем же шрифтом,
+   тем же кеглем и с той же базовой линией), поэтому видео
+   идеально «ложится» в буквы.
+   ============================================================ */
+(function(){
+  'use strict';
+
+  var links = Array.prototype.slice.call(document.querySelectorAll('.menu-link'));
+  if (!links.length) return;
+
+  var DPR = Math.min(window.devicePixelRatio || 1, 2.5);
+  var FALLBACK_FONT = '"Yeseva One", Georgia, serif';
+
+  var videos = [];
+  var videoInited = false;
+
+  /* ---------- построение маски ---------- */
+  function buildMask(link){
+    var textEl = link.querySelector('.menu-link__text');
+    var marker = link.querySelector('.bl');
+    var frame  = link.querySelector('.menu-link__video');
+    if (!textEl || !frame) return;
+
+    var fr = frame.getBoundingClientRect();
+    var W  = Math.round(fr.width);
+    var H  = Math.round(fr.height);
+    if (W < 4 || H < 4) return;
+
+    var cs = window.getComputedStyle(textEl);
+    var fs = parseFloat(cs.fontSize) || 64;
+    var ff = cs.fontFamily || FALLBACK_FONT;
+
+    var lsRaw = cs.letterSpacing;
+    var lsVal = (lsRaw && lsRaw !== 'normal') ? (parseFloat(lsRaw) || 0) : 0;
+
+    var text = (textEl.textContent || '').replace(/\s+/g, ' ').trim();
+    if (!text) return;
+
+    var cv  = document.createElement('canvas');
+    cv.width  = Math.max(1, Math.round(W * DPR));
+    cv.height = Math.max(1, Math.round(H * DPR));
+
+    var ctx = cv.getContext('2d');
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    ctx.font = (fs * DPR) + 'px ' + ff;
+    if (lsVal && ('letterSpacing' in ctx)) {
+      ctx.letterSpacing = (lsVal * DPR) + 'px';
+    }
+    ctx.textAlign    = 'left';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle    = '#ffffff';
+
+    /* координаты текста относительно рамки видео */
+    var x = 0;
+    var y = fs * 0.8;
+    if (marker) {
+      var mr = marker.getBoundingClientRect();
+      x = mr.left - fr.left;
+      y = mr.bottom - fr.top;
+    }
+
+    ctx.fillText(text, x * DPR, y * DPR);
+
+    var url = 'url("' + cv.toDataURL('image/png') + '")';
+
+    frame.style.webkitMaskImage    = url;
+    frame.style.maskImage          = url;
+    frame.style.webkitMaskRepeat   = 'no-repeat';
+    frame.style.maskRepeat         = 'no-repeat';
+    frame.style.webkitMaskSize     = '100% 100%';
+    frame.style.maskSize           = '100% 100%';
+    frame.style.webkitMaskPosition = '0 0';
+    frame.style.maskPosition       = '0 0';
+  }
+
+  /* ---------- готовность видео ---------- */
+  function hasMask(frame){
+    return !!(frame.style.maskImage || frame.style.webkitMaskImage);
+  }
+
+  function initVideo(link){
+    var frame = link.querySelector('.menu-link__video');
+    var video = link.querySelector('video');
+    if (!frame || !video) return;
+
+    videos.push(video);
+
+    function markReady(){
+      if (link.classList.contains('is-ready')) return;
+      if (!hasMask(frame)) return;
+      link.classList.add('is-ready');
+    }
+
+    video.addEventListener('loadeddata', markReady);
+    video.addEventListener('canplay',    markReady);
+    video.addEventListener('playing',    markReady);
+
+    video.addEventListener('error', function(){
+      link.classList.remove('is-ready');
+    });
+
+    if (video.readyState >= 2) markReady();
+  }
+
+  /* ---------- воспроизведение ---------- */
+  function syncPlayback(){
+    var open = document.body.classList.contains('is-menu');
+    var hidden = document.hidden;
+
+    for (var i = 0; i < videos.length; i++){
+      var v = videos[i];
+      if (open && !hidden){
+        if (v.paused){
+          var p = v.play();
+          if (p && typeof p.catch === 'function') p.catch(function(){});
+        }
+      } else {
+        if (!v.paused) v.pause();
+      }
+    }
+  }
+
+  /* ---------- запуск ---------- */
+  function boot(){
+    requestAnimationFrame(function(){
+      for (var i = 0; i < links.length; i++) buildMask(links[i]);
+
+      if (!videoInited){
+        videoInited = true;
+        for (var j = 0; j < links.length; j++) initVideo(links[j]);
+      }
+      syncPlayback();
+    });
+  }
+
+  if (document.fonts && document.fonts.ready){
+    /* сначала гарантируем, что нужный шрифт загружен */
+    try { document.fonts.load('100px "Yeseva One"'); } catch(e){}
+    document.fonts.ready.then(boot, boot);
+    setTimeout(boot, 1400); /* страховка */
+  } else {
+    boot();
+  }
+
+  /* пересборка масок при изменении размеров (кегль зависит от vw) */
+  var rT = null;
+  window.addEventListener('resize', function(){
+    if (rT) clearTimeout(rT);
+    rT = setTimeout(function(){
+      for (var i = 0; i < links.length; i++) buildMask(links[i]);
+    }, 160);
+  }, { passive: true });
+
+  /* следим за открытием меню — запускаем/останавливаем видео */
+  var lastMenuState = null;
+  function checkMenu(){
+    var open = document.body.classList.contains('is-menu');
+    if (open !== lastMenuState){
+      lastMenuState = open;
+      syncPlayback();
+    }
+  }
+  if (window.MutationObserver){
+    new MutationObserver(checkMenu).observe(document.body, {
+      attributes: true, attributeFilter: ['class']
+    });
+  }
+  setInterval(checkMenu, 600);
+
+  document.addEventListener('visibilitychange', syncPlayback);
+
+  /* первый жест — страховка для автоплея на iOS */
+  var kick = function(){
+    syncPlayback();
+    window.removeEventListener('touchstart', kick);
+    window.removeEventListener('pointerdown', kick);
+  };
+  window.addEventListener('touchstart', kick, { passive: true });
+  window.addEventListener('pointerdown', kick, { passive: true });
 })();
 </script>
 
