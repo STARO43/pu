@@ -9,13 +9,12 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..500&amp;family=Literata:ital,opsz,wght@0,7..72,400..500;1,7..72,400&amp;family=Newsreader:ital,opsz,wght@0,6..72,400..500;1,6..72,400&amp;family=Yeseva+One&amp;display=swap" rel="stylesheet"><script>document.documentElement.classList.replace('no-js','js');</script>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..500&amp;family=Literata:ital,opsz,wght@0,7..72,400..500;1,7..72,400&amp;family=Yeseva+One&amp;display=swap" rel="stylesheet"><script>document.documentElement.classList.replace('no-js','js');</script>
 
 <style>
 :root{
-    --font-title: "Yeseva One", Georgia, serif;
+  --font-title: "Yeseva One", Georgia, serif;
   --font-body: "Literata", Georgia, serif;
-  --font-display: "Newsreader", Georgia, serif;
   --font-sans: "Golos Text", -apple-system, sans-serif;
 
   --bg: #fbf2ed;
@@ -126,13 +125,29 @@ h1{
   margin:0 0 .6em;
 }
 .dates{
-  margin:1.5rem 0 0;
+  margin:2rem 0 0;
   font-family:var(--font-sans);
   font-size:12px; font-weight:500;
-  letter-spacing:.1em; color:var(--ink-soft);
+  letter-spacing:.14em; color:var(--ink-soft);
   font-variant-numeric:tabular-nums;
 }
-.hero-rule{display:block;width:100%;height:1px;background:var(--line-soft);margin:2.5rem 0 0}
+.hero-rule {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 2.5rem 0 0;
+  color: var(--accent);
+  opacity: .45;
+  font-size: .8rem;
+}
+.hero-rule::before,
+.hero-rule::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: currentColor;
+  opacity: .5;
+}
 
 /* ================= text ================= */
 .para{
@@ -180,38 +195,19 @@ h1{
   18%,62%{background-color:rgba(140,35,25,.06)}
 }
 
-/* ================= bottom actions ================= */
-.case-actions {
-  margin: 4rem 0 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  align-items: center;
-  flex-wrap: wrap;
-  background: transparent;
-}
-.case-action {
-  appearance: none; border: none; background: none; padding: 0; margin: 0;
-  color: var(--muted); font: inherit;
-  font-family: var(--font-sans);
-  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 500;
-  cursor: default;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-.case-action:hover {
-  color: var(--ink);
-}
-.case-actions .dot {
-  display: inline-block; width: 3px; height: 3px; border-radius: 50%;
-  background: var(--muted); vertical-align: middle;
+/* ================= colophon ================= */
+.colophon {
+  margin: 4.5rem 0 0;
+  text-align: center;
+  color: var(--accent);
+  opacity: .35;
+  font-size: 1.3rem;
 }
 
 /* ================= desktop ================= */
 @media (min-width:768px){
   body{
-    font-family:var(--font-display);
+    font-family:var(--font-body);
     font-size:1.25rem;
     line-height:1.6;
   }
@@ -230,20 +226,34 @@ h1{
   }
   .h1-first{
     display:block; font-size:.38em; font-style:normal; font-weight:400;
-    line-height:1.2; letter-spacing:0; color:color:inherit;
+    line-height:1.2; letter-spacing:0; color:inherit;
     margin:0 0 .6em;
   }
   .dates{
-    margin:1.5rem 0 0;
+    margin:2rem 0 0;
     font-family:var(--font-sans);
-    font-size:12px; font-weight:500; letter-spacing:.1em;
+    font-size:12px; font-weight:500; letter-spacing:.14em;
     color:var(--ink-soft); font-variant-numeric:tabular-nums;
   }
-  .hero-rule{display:block;width:100%;height:1px;background:var(--line-soft);margin:2.5rem 0 0}
+  .hero-rule {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 2.5rem 0 0;
+    color: var(--accent);
+    opacity: .45;
+    font-size: .8rem;
+  }
+  .hero-rule::before,
+  .hero-rule::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: currentColor;
+    opacity: .5;
+  }
 
   .page{user-select:none;-webkit-user-select:none}
-  body.dragging{cursor:default}
-  body.dragging *{user-select:none;-webkit-user-select:none}
 }
 
 /* ================= FAB ================= */
@@ -297,7 +307,7 @@ h1{
       <p class="eyebrow"><span>Биография</span></p>
       <h1><span class="h1-first">Александр Сергеевич </span>Пушкин</h1>
       <p class="dates">1799 — 1837</p>
-      <span class="hero-rule" aria-hidden="true"></span>
+      <span class="hero-rule" aria-hidden="true">★</span>
     </header>
 
     <p class="para lead" id="p1">Александр Сергеевич Пушкин — гений, народный поэт, родоначальник русской литературы, создатель нашего литературного языка. Его жизненный путь и творческое наследие представляют собой незыблемый фундамент культурной самобытности и духовного возрождения нации, яркое свидетельство того, как передовая личность способна стать выразителем глубинных стремлений народа.</p>
@@ -408,7 +418,9 @@ h1{
 
     <p class="para" id="p47">Пушкин — русский до глубины души. Он сам говорил, что ни за что на свете не променял бы Отечество. И в этом — его трагедия: с одной стороны, он горячо любил Родину, желал ей добра, гордился её прошлым; с другой — пытался бежать из России, спасаясь от самодержавного деспотизма, не понимая, как с ним бороться. Пушкин, как и всякий гений, намного порядков перерос эпоху, смотрел вперёд, в будущее. Именно поэтому Белинский писал, что Пушкин — воспитатель грядущих поколений.</p>
 
-    
+    <div class="colophon" aria-hidden="true">
+      <span class="orn">★</span>
+    </div>
   </article>
 </main>
 
@@ -434,9 +446,6 @@ h1{
   var KEY = 'pushkin.marks.v15';
   var FINE_POINTER = window.matchMedia('(pointer: fine)').matches;
 
-  // ============================================================
-  // Shatter tuning: mobile is slower
-  // ============================================================
   var IS_MOBILE = window.matchMedia('(pointer: coarse)').matches ||
                   window.innerWidth < 768;
   var SHATTER_TIME_SCALE  = IS_MOBILE ? 2.1 : 1.0;
@@ -447,9 +456,6 @@ h1{
   var byId = {};
   paras.forEach(function (p) { byId[p.id] = p; });
 
-  // ============================================================
-  // Preload reveal + hero animation
-  // ============================================================
   function runHeroIntro() {
     document.documentElement.classList.remove('preload');
 
@@ -489,18 +495,12 @@ h1{
     Promise.race([readyP, timeoutP]).then(runHeroIntro);
   })();
 
-  // ============================================================
-  // close cross fade
-  // ============================================================
   var closeEl = $('#case-close');
   window.addEventListener('scroll', function () {
     if (window.scrollY > 40) closeEl.classList.add('is-faded');
     else closeEl.classList.remove('is-faded');
   }, { passive: true });
 
-  // ============================================================
-  // bookmarks
-  // ============================================================
   function load() {
     try {
       var a = JSON.parse(localStorage.getItem(KEY) || '{}');
@@ -588,46 +588,6 @@ h1{
 
   fab.addEventListener('click', toggleBookmark);
 
-  // ============================================================
-  // copy / mail
-  // ============================================================
-  function collectText() {
-    return paras.map(function (p) {
-      var clone = p.cloneNode(true);
-      return clone.textContent.replace(/\s+/g, ' ').trim();
-    }).join('\n\n');
-  }
-  function copyText() {
-    var text = collectText();
-    function done() { toast('Скопировано'); }
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text, done); });
-    } else {
-      fallbackCopy(text, done);
-    }
-  }
-  function fallbackCopy(text, done) {
-    var ta = document.createElement('textarea');
-    ta.value = text;
-    ta.setAttribute('readonly', '');
-    ta.style.position = 'fixed';
-    ta.style.top = '-1000px';
-    ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
-    try { document.execCommand('copy'); done(); }
-    catch (e) { toast('Не удалось скопировать'); }
-    document.body.removeChild(ta);
-  }
-  function sendLink() {
-    var subject = document.title || 'Пушкин · Биография';
-    var body = 'Ссылка: ' + location.href;
-    location.href = 'mailto:?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-  }
-
-  // ============================================================
-  // desktop drag-to-scroll
-  // ============================================================
   if (FINE_POINTER) {
     var dragging = false, startY = 0, startScroll = 0, moved = false;
     var THRESHOLD = 4;
@@ -641,14 +601,13 @@ h1{
       if (!dragging) return;
       var dy = e.clientY - startY;
       if (!moved && Math.abs(dy) < THRESHOLD) return;
-      if (!moved) { moved = true; document.body.classList.add('dragging'); }
+      if (!moved) { moved = true; }
       e.preventDefault();
       window.scrollTo(0, startScroll - dy);
     }
     function onUp() {
       if (!dragging) return;
       dragging = false;
-      if (moved) document.body.classList.remove('dragging');
       moved = false;
     }
     document.addEventListener('pointerdown', onDown, { passive: true });
@@ -659,9 +618,6 @@ h1{
 
   setTimeout(function () { fab.classList.add('show'); }, 2500);
 
-  // ============================================================
-  // SHATTER SYSTEM
-  // ============================================================
   var TWO_PI = 2 * Math.PI;
 
   var imageWidth  = window.innerWidth;
@@ -678,7 +634,6 @@ h1{
   function randomRange(a, b) { return a + (b - a) * Math.random(); }
   function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
   function easeCubicIn(t)  { return t * t * t; }
-  function easeCubicOut(t) { return 1 - Math.pow(1 - t, 3); }
   function getRandomWallDepth() { return Math.floor(500 * Math.random()) + 100; }
 
   function initShatter() {
@@ -885,100 +840,92 @@ h1{
   }
 
   async function triggerShatter(clientX, clientY) {
-  if (shatterBusy) return;
-  shatterBusy = true;
+    if (shatterBusy) return;
+    shatterBusy = true;
 
-  var scrollX = window.scrollX || window.pageXOffset || 0;
-  var scrollY = window.scrollY || window.pageYOffset || 0;
-  var vw = window.innerWidth;
-  var vh = window.innerHeight;
-  var docEl = document.documentElement;
+    var scrollX = window.scrollX || window.pageXOffset || 0;
+    var scrollY = window.scrollY || window.pageYOffset || 0;
+    var vw = window.innerWidth;
+    var vh = window.innerHeight;
+    var docEl = document.documentElement;
 
-  // Прячем только служебные fixed-элементы
-  var hiddenEls = [closeEl, fab, toastEl];
-  hiddenEls.forEach(function (el) {
-    if (el) el.style.visibility = 'hidden';
-  });
-
-  try {
-    // Захватываем регион viewport, НЕ трогая скролл страницы.
-    // x/y — смещение региона в координатах документа.
-    // scrollX/scrollY — внутренний скролл html2canvas (не трогаем).
-    var captured = await html2canvas(document.body, {
-      width: vw,
-      height: vh,
-      windowWidth: vw,
-      windowHeight: Math.max(docEl.scrollHeight, vh),
-      x: scrollX,
-      y: scrollY,
-      scrollX: 0,
-      scrollY: 0,
-      useCORS: true,
-      scale: 1,
-      logging: false,
-      backgroundColor: '#fbf2ed',
-      ignoreElements: function (el) {
-        return el === renderer.domElement ||
-               el === closeEl ||
-               el === fab ||
-               el === toastEl;
-      }
+    var hiddenEls = [closeEl, fab, toastEl];
+    hiddenEls.forEach(function (el) {
+      if (el) el.style.visibility = 'hidden';
     });
 
-    // Показываем THREE-канвас со снимком viewport.
-    // Скролл страницы не менялся — пользователь ничего не заметил.
-    renderer.domElement.style.display = 'block';
+    try {
+      var captured = await html2canvas(document.body, {
+        width: vw,
+        height: vh,
+        windowWidth: vw,
+        windowHeight: Math.max(docEl.scrollHeight, vh),
+        x: scrollX,
+        y: scrollY,
+        scrollX: 0,
+        scrollY: 0,
+        useCORS: true,
+        scale: 1,
+        logging: false,
+        backgroundColor: '#fbf2ed',
+        ignoreElements: function (el) {
+          return el === renderer.domElement ||
+                 el === closeEl ||
+                 el === fab ||
+                 el === toastEl;
+        }
+      });
 
-    clickPosition[0] = clientX;
-    clickPosition[1] = vh - clientY;
+      renderer.domElement.style.display = 'block';
 
-    var tex = new THREE.CanvasTexture(captured);
-    tex.minFilter = THREE.LinearFilter;
-    tex.magFilter = THREE.LinearFilter;
+      clickPosition[0] = clientX;
+      clickPosition[1] = vh - clientY;
 
-    var depth = getRandomWallDepth();
-    var geo = new THREE.BoxGeometry(vw, vh, depth);
-    var sideColor = new THREE.Color(0xfbf2ed).multiplyScalar(0.82);
-    var sideMat = new THREE.MeshPhongMaterial({ color: sideColor });
-    var mats = [
-      sideMat, sideMat, sideMat, sideMat,
-      new THREE.MeshBasicMaterial({ map: tex }),
-      sideMat
-    ];
-    var box = new THREE.Mesh(geo, mats);
-    box.position.z = -depth / 2;
-    box.userData.depth = depth;
-    box.userData.texture = tex;
-    box.userData.isWall = true;
-    scene.add(box);
+      var tex = new THREE.CanvasTexture(captured);
+      tex.minFilter = THREE.LinearFilter;
+      tex.magFilter = THREE.LinearFilter;
 
-    // Форсируем композит кадра: 2 rAF достаточно, чтобы WebGL-канвас
-    // гарантированно оказался на экране до того, как вернём body.
-    renderer.render(scene, camera);
-    await new Promise(function (r) {
-      requestAnimationFrame(function () { requestAnimationFrame(r); });
-    });
+      var depth = getRandomWallDepth();
+      var geo = new THREE.BoxGeometry(vw, vh, depth);
+      var sideColor = new THREE.Color(0xfbf2ed).multiplyScalar(0.82);
+      var sideMat = new THREE.MeshPhongMaterial({ color: sideColor });
+      var mats = [
+        sideMat, sideMat, sideMat, sideMat,
+        new THREE.MeshBasicMaterial({ map: tex }),
+        sideMat
+      ];
+      var box = new THREE.Mesh(geo, mats);
+      box.position.z = -depth / 2;
+      box.userData.depth = depth;
+      box.userData.texture = tex;
+      box.userData.isWall = true;
+      scene.add(box);
 
-    hiddenEls.forEach(function (el) { if (el) el.style.visibility = ''; });
+      renderer.render(scene, camera);
+      await new Promise(function (r) {
+        requestAnimationFrame(function () { requestAnimationFrame(r); });
+      });
 
-    triangulate();
-    shatter();
+      hiddenEls.forEach(function (el) { if (el) el.style.visibility = ''; });
 
-    var startedAt = performance.now();
-    (function checkAndNavigate() {
-      var elapsed = performance.now() - startedAt;
-      if (activeShards.length === 0 || elapsed > SHATTER_MAX_WAIT) {
-        window.location.href = '/index';
-      } else {
-        setTimeout(checkAndNavigate, 50);
-      }
-    })();
+      triangulate();
+      shatter();
 
-  } catch (err) {
-    hiddenEls.forEach(function (el) { if (el) el.style.visibility = ''; });
-    window.location.href = '/index';
+      var startedAt = performance.now();
+      (function checkAndNavigate() {
+        var elapsed = performance.now() - startedAt;
+        if (activeShards.length === 0 || elapsed > SHATTER_MAX_WAIT) {
+          window.location.href = '/index';
+        } else {
+          setTimeout(checkAndNavigate, 50);
+        }
+      })();
+
+    } catch (err) {
+      hiddenEls.forEach(function (el) { if (el) el.style.visibility = ''; });
+      window.location.href = '/index';
+    }
   }
-}
 
   if (typeof THREE !== 'undefined' && typeof Delaunator !== 'undefined' && typeof html2canvas !== 'undefined') {
     initShatter();
@@ -993,9 +940,6 @@ h1{
 
 })();
 </script>
-
-</body>
-</html>
 
 </body>
 </html>
