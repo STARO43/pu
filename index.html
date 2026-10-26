@@ -46,8 +46,7 @@ html,body{
 }
 a,button{cursor:default}
 
-html,body{cursor:none}
-body.menu-cursor, body.menu-cursor a, body.menu-cursor button{cursor:default}
+
 #fallback{
   position:fixed;inset:0;z-index:1;
   background:#0a0806 url('./pushkin.jpg') center/cover no-repeat;
@@ -228,11 +227,10 @@ noscript #noscript-fallback{ display:flex; }
 (function(){
   var isMenuOpen = false;
 
-   function setMenu(open){
+  function setMenu(open){
     if (isMenuOpen === open) return;
     isMenuOpen = open;
     document.body.classList.toggle('is-menu', open);
-    document.body.classList.toggle('menu-cursor', open);
   }
 
   var coarse = window.matchMedia('(hover: none), (pointer: coarse)').matches;
