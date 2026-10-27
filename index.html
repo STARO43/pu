@@ -47,6 +47,7 @@ a,button{cursor:default}
 
 #stage{
   position:fixed;inset:0;z-index:2;background:#0a0806;
+  touch-action:none;
 }
 #stage canvas{display:block;width:100%;height:100%}
 
@@ -93,6 +94,7 @@ body.is-menu #menu{
   line-height:1.05;
   color:#f4e8d8;
   margin-bottom:clamp(1rem,3vw,2rem);
+  touch-action:manipulation;
 }
 
 #help-btn{
@@ -111,6 +113,17 @@ body.is-menu #menu{
   -webkit-user-select:none;user-select:none;
   -webkit-tap-highlight-color:transparent;
   transition:color 0.3s ease;
+  touch-action:manipulation;
+}
+/* Увеличенная hit-area без изменения визуального размера.
+   На десктопе не мешает: клик по ::before всё равно попадает в кнопку. */
+#help-btn::before{
+  content:'';
+  position:absolute;
+  top:50%;left:50%;
+  width:44px;height:44px;
+  transform:translate(-50%,-50%);
+  /* на десктопе это невидимая зона, курсор/вид не меняются */
 }
 #help-btn:hover,
 #help-btn:focus,
@@ -356,6 +369,55 @@ noscript #noscript-fallback{ display:flex; }
     transition-delay:0s !important;
   }
 }
+
+/* ============================================================
+   МОБИЛЬНЫЕ ПРАВКИ — только внутри @media (max-width: 600px).
+   Всё, что вне этого блока, идентично исходнику.
+   ============================================================ */
+@media (max-width: 600px){
+
+  /* safe-area: на десктопе env() = 0, но здесь блок и так не применяется */
+  #help-menu{
+    padding:
+      max(clamp(24px, 4.5vh, 48px), env(safe-area-inset-top))
+      max(clamp(20px, 5vw, 72px), env(safe-area-inset-right))
+      max(clamp(24px, 4.5vh, 48px), env(safe-area-inset-bottom))
+      max(clamp(20px, 5vw, 72px), env(safe-area-inset-left));
+  }
+
+  /* футер-подсказка: разрешаем перенос, ограничиваем ширину */
+  .help-info{
+    white-space:normal;
+    max-width:92vw;
+    text-align:center;
+    letter-spacing:0.02em;
+  }
+
+  /* трекинг подзаголовка на узком экране */
+  .title-sub{
+    letter-spacing:0.32em;
+    padding-left:0.32em;
+  }
+
+  /* каскад слов: чуть меньше blur, чтобы не джанкало на слабых Android */
+  .help-quote .word{
+    filter:blur(3px);
+  }
+
+  /* fallback-скролл, если цитата всё же не влезла (включается только при переполнении) */
+  .help-quote-wrap{
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
+    touch-action:pan-y;
+  }
+
+  /* кнопка ? — учитываем home-индикатор iOS */
+  #help-btn{
+    bottom:env(safe-area-inset-bottom);
+    right:env(safe-area-inset-right);
+  }
+}
 </style>
 </head>
 <body>
@@ -473,6 +535,10 @@ function revealList(elements, startDelay, step){
   var isMenuOpen = false;
   var isHelpOpen = false;
 
+  // ★ Единая мобильная проверка (только для текста подсказки;
+  //    тайминги цитаты остаются глобальными, см. ниже).
+  var MOBILE_MQ = window.matchMedia('(max-width: 600px)');
+
   function setMenu(open){
     if (isMenuOpen === open) return;
     isMenuOpen = open;
@@ -589,7 +655,7 @@ function revealList(elements, startDelay, step){
     }
   ];
 
-  // ★ Медленный созерцательный профиль
+  // ★ Тайминги остаются глобальными (десктоп не меняется).
   var SHOW_MS  = 36000;
   var FADE_OUT = 7500;
 
@@ -602,6 +668,21 @@ function revealList(elements, startDelay, step){
   var infoEl   = document.getElementById('help-info');
   var quoteTimer = null;
   var quoteIndex = 0;
+
+  // ★ Только текст подсказки меняется на мобильных/тач. Десктоп — как было.
+  function applyInfoText(){
+    if (coarse){
+      infoEl.textContent = 'Для связи @vnvax';
+    } else {
+      infoEl.textContent = 'Для сведения: двойной клик — переходы; в биографии — закладки справа снизу; для связи @vnvax';
+    }
+  }
+  applyInfoText();
+  if (MOBILE_MQ.addEventListener){
+    MOBILE_MQ.addEventListener('change', applyInfoText);
+  } else if (MOBILE_MQ.addListener){
+    MOBILE_MQ.addListener(applyInfoText);
+  }
 
   function buildQuote(text){
     quoteEl.innerHTML = '';
@@ -616,7 +697,7 @@ function revealList(elements, startDelay, step){
         var span = document.createElement('span');
         span.className = 'word';
         span.textContent = w;
-        // ★ Каскадная задержка через все абзацы
+        // ★ Каскадная задержка через все абзацы (глобальная, как раньше)
         span.style.transitionDelay =
           (globalWordIndex * (1000 / WORDS_PER_SEC)) + 'ms';
         globalWordIndex++;
@@ -657,7 +738,10 @@ function revealList(elements, startDelay, step){
 
     quoteEl.style.width = availW + 'px';
 
-    var lo = 11, hi = 44, best = lo;
+    // ★ На мобильных разрешаем чуть меньший минимум (десктоп не затронут:
+    //    при ширине > 600px isMobile === false, lo остаётся 11).
+    var isMobile = MOBILE_MQ.matches;
+    var lo = isMobile ? 9 : 11, hi = 44, best = lo;
     for (var i = 0; i < 14; i++){
       var mid = (lo + hi) / 2;
       quoteEl.style.fontSize = mid + 'px';
@@ -782,6 +866,15 @@ function revealList(elements, startDelay, step){
   window.addEventListener('resize', function(){
     if (document.body.classList.contains('is-help')) fitQuote();
   });
+
+  // ★ iOS: visualViewport меняется при показе адресной строки / повороте.
+  //   На десктопе visualViewport совпадает с innerHeight → лишний вызов
+  //   fitQuote() просто пересчитает то же самое (визуально ничего не меняется).
+  if (window.visualViewport){
+    window.visualViewport.addEventListener('resize', function(){
+      if (document.body.classList.contains('is-help')) fitQuote();
+    });
+  }
 })();
 </script>
 
