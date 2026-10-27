@@ -30,8 +30,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Yeseva+One&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
 
-<link rel="preload" as="image" href="./pushkin.jpg" fetchpriority="high">
-
 <style>
 *,*::before,*::after{box-sizing:border-box}
 
@@ -46,29 +44,6 @@ html,body{
   -webkit-tap-highlight-color:transparent;
 }
 a,button{cursor:default}
-
-
-#fallback{
-  position:fixed;inset:0;z-index:1;
-  background:#0a0806 url('./pushkin.jpg') center/cover no-repeat;
-  filter:brightness(0.55) contrast(1.02);
-  opacity:0;
-  transition:opacity 1.2s ease, filter 1.4s cubic-bezier(.4,0,.2,1);
-  pointer-events:none;
-}
-#fallback::after{
-  content:'';
-  position:absolute;inset:0;
-  background:
-    radial-gradient(ellipse at 50% 100%, rgba(255,90,20,0.10), transparent 55%),
-    radial-gradient(circle at 50% 40%, transparent 30%, rgba(5,3,2,0.85) 100%);
-}
-body.no-webgl #fallback,
-body.gl-broken #fallback{ opacity:1; }
-body.no-webgl #stage,
-body.gl-broken  #stage{ display:none; }
-body.is-menu #fallback,
-body.is-help #fallback{ filter:brightness(0.06) contrast(1.0); }
 
 #stage{
   position:fixed;inset:0;z-index:2;background:#0a0806;
@@ -196,7 +171,9 @@ body.is-help #help-menu{
   padding-left:0.7em;
 }
 
-/* ---------- ЦИТАТА: портретное проявление ---------- */
+/* ============================================================
+   ЦИТАТА — «дорогое» многослойное проявление
+   ============================================================ */
 .help-quote-wrap{
   display:flex;flex-direction:column;
   align-items:center;justify-content:center;
@@ -206,19 +183,39 @@ body.is-help #help-menu{
   margin:0 auto;
   padding: clamp(24px, 5vh, 56px) 0;
   overflow:hidden;
+
+  /* скрытое состояние */
   opacity:0;
-  filter: brightness(0.32) blur(3px);
-  transform: scale(1.012);
+  filter: brightness(0.10) blur(10px);
+  transform: scale(1.020);
+
+  /* ★ Разные слои — разная скорость и задержка.
+        opacity → быстрее всех, filter → с паузой, transform → очень долго */
   transition:
-    opacity   3.2s cubic-bezier(.22,.61,.36,1),
-    filter    3.2s cubic-bezier(.22,.61,.36,1),
-    transform 3.2s cubic-bezier(.22,.61,.36,1);
+    opacity   9s  cubic-bezier(.12,.88,.36,1) 0s,
+    filter    8s  cubic-bezier(.16,.84,.44,1) 0.6s,
+    transform 14s cubic-bezier(.10,.90,.34,1) 0s;
+
   will-change: opacity, filter, transform;
 }
 .help-quote-wrap.is-shown{
   opacity:1;
   filter: brightness(1) blur(0);
   transform: scale(1);
+
+  /* ★ Уход — быстрее появления, чтобы не тормозить смену */
+  transition:
+    opacity   5s cubic-bezier(.55,0,.75,.2),
+    filter    5s cubic-bezier(.55,0,.75,.2),
+    transform 5s cubic-bezier(.55,0,.75,.2);
+
+  /* ★ «Дыхание» после проявления */
+  animation: quoteBreath 11s ease-in-out 9s infinite alternate;
+}
+
+@keyframes quoteBreath{
+  from { opacity: 1;    filter: brightness(1.00) blur(0); }
+  to   { opacity: 0.94; filter: brightness(0.93) blur(0.15px); }
 }
 
 .help-quote{
@@ -241,11 +238,25 @@ body.is-help #help-menu{
   margin-bottom:0;
 }
 
+/* ★ Каскад слов — медленный, длинный */
 .help-quote .word{
   display:inline-block;
+  opacity:0;
+  filter:blur(5px);
+  transform: translateY(3px);
+  transition:
+    opacity   2.8s cubic-bezier(.22,.61,.36,1),
+    filter    2.8s cubic-bezier(.22,.61,.36,1),
+    transform 2.8s cubic-bezier(.22,.61,.36,1);
+  will-change: opacity, filter, transform;
+}
+.help-quote-wrap.is-shown .help-quote .word{
+  opacity:1;
+  filter:blur(0);
+  transform: translateY(0);
 }
 
-/* Автор: тот же цвет, крупнее и без блеклости */
+/* Автор — приходит вслед за словами, сам тоже долгий */
 .help-author{
   font-family:'Literata', Georgia, serif;
   font-weight:500;font-style:normal;
@@ -255,7 +266,16 @@ body.is-help #help-menu{
   color:#f4e8d8;
   margin:0;padding-left:0.5em;
   text-align:center;
+
+  opacity:0;
+  filter: blur(2px);
+  transition:
+    opacity 4s cubic-bezier(.22,.61,.36,1) 2.5s,
+    filter  4s cubic-bezier(.22,.61,.36,1) 2.5s;
+}
+.help-quote-wrap.is-shown .help-author{
   opacity:0.92;
+  filter: blur(0);
 }
 
 /* ---------- НИЗ ---------- */
@@ -277,8 +297,8 @@ body.is-help #help-menu{
   opacity:0;
   filter: brightness(0.32) blur(2px);
   transition:
-    opacity   2.8s cubic-bezier(.22,.61,.36,1),
-    filter    2.8s cubic-bezier(.22,.61,.36,1);
+    opacity   3.8s cubic-bezier(.22,.61,.36,1),
+    filter    3.8s cubic-bezier(.22,.61,.36,1);
   will-change: opacity, filter;
 }
 .help-info.is-shown{
@@ -327,15 +347,20 @@ noscript #noscript-fallback{ display:flex; }
   #menu{ transition-duration:0.3s; transition-delay:0s; }
   #help-menu{ transition-duration:0.3s; transition-delay:0s; }
   .help-quote-wrap,
-  .help-info{ transition-duration:0.3s; }
+  .help-quote-wrap.is-shown{ animation:none !important; }
+  .help-quote-wrap,
+  .help-quote .word,
+  .help-author,
+  .help-info{
+    transition-duration:0.4s !important;
+    transition-delay:0s !important;
+  }
 }
 </style>
 </head>
 <body>
 
 <h1 class="visually-hidden">Пушкин. Главное</h1>
-
-<div id="fallback" aria-hidden="true"></div>
 
 <div id="stage" aria-hidden="true"></div>
 
@@ -528,9 +553,6 @@ function revealList(elements, startDelay, step){
     });
   });
 
-  /* ============================================================
-     MENU REVEAL
-     ============================================================ */
   var menuLinks = Array.prototype.slice.call(document.querySelectorAll('#menu .menu-link'));
   var menuWasOpen = false;
   setInterval(function(){
@@ -544,9 +566,6 @@ function revealList(elements, startDelay, step){
     }
   }, 60);
 
-  /* ============================================================
-     QUOTES
-     ============================================================ */
   var QUOTES = [
     {
       text: 'До Пушкина литература — светская забава, литератор в лучшем случае — придворный, как Дмитриев, Державин, Жуковский, или мелкий чиновник — как Фонвизин, Пнин, Рылеев. Если он придворный — с ним считаются, но покуда он чиновник — его третируют как забавника, как шута.\n\nПушкин первый почувствовал, что литература — национальное дело первостепенной важности, что она выше работы в канцеляриях и службы во дворце, он первый поднял звание литератора на высоту до него недосягаемую: в его глазах поэт — выразитель всех чувств и дум народа, он призван понять и изобразить все явления жизни.',
@@ -570,8 +589,12 @@ function revealList(elements, startDelay, step){
     }
   ];
 
-  var SHOW_MS  = 17000;
-  var FADE_OUT = 3200;   /* совпадает с CSS-переходом ухода в тьму */
+  // ★ Медленный созерцательный профиль
+  var SHOW_MS  = 36000;
+  var FADE_OUT = 7500;
+
+  var WORDS_PER_SEC      = 6;
+  var EXIT_WORDS_PER_SEC = 22;
 
   var wrapEl   = document.getElementById('help-quote-wrap');
   var quoteEl  = document.getElementById('help-quote');
@@ -583,6 +606,8 @@ function revealList(elements, startDelay, step){
   function buildQuote(text){
     quoteEl.innerHTML = '';
     var paragraphs = text.split(/\n\n+/);
+    var globalWordIndex = 0;
+
     paragraphs.forEach(function(pText){
       var pEl = document.createElement('p');
       pEl.className = 'quote-p';
@@ -591,6 +616,10 @@ function revealList(elements, startDelay, step){
         var span = document.createElement('span');
         span.className = 'word';
         span.textContent = w;
+        // ★ Каскадная задержка через все абзацы
+        span.style.transitionDelay =
+          (globalWordIndex * (1000 / WORDS_PER_SEC)) + 'ms';
+        globalWordIndex++;
         pEl.appendChild(span);
         if (wi < words.length - 1){
           pEl.appendChild(document.createTextNode(' '));
@@ -640,7 +669,6 @@ function revealList(elements, startDelay, step){
     quoteEl.style.width = '';
   }
 
-  /* --- Появление цитаты: медленно из тьмы, как портрет --- */
   function showQuoteAnimated(){
     var q = QUOTES[quoteIndex];
     wrapEl.classList.remove('is-shown');
@@ -652,7 +680,7 @@ function revealList(elements, startDelay, step){
     fitQuote();
     void wrapEl.offsetHeight;
 
-    /* двойной rAF — гарантированно фиксируем стартовое состояние */
+    // Двойной rAF — фиксируем стартовое состояние
     requestAnimationFrame(function(){
       requestAnimationFrame(function(){
         if (!document.body.classList.contains('is-help')) return;
@@ -661,9 +689,18 @@ function revealList(elements, startDelay, step){
     });
   }
 
-  /* --- Уход цитаты в тьму --- */
   function hideQuoteAnimated(done){
+    // ★ Реверс-каскад: последнее слово уходит первым
+    var words = quoteEl.querySelectorAll('.word');
+    var n = words.length;
+    var stepMs = 1000 / EXIT_WORDS_PER_SEC;
+    for (var i = 0; i < n; i++){
+      var w = words[n - 1 - i];
+      w.style.transitionDelay  = (i * stepMs) + 'ms';
+      w.style.transitionDuration = '1.6s';
+    }
     wrapEl.classList.remove('is-shown');
+
     setTimeout(function(){
       quoteEl.innerHTML = '';
       authorEl.textContent = '';
@@ -685,9 +722,6 @@ function revealList(elements, startDelay, step){
     infoEl.classList.remove('is-shown');
   }
 
-  /* ============================================================
-     ПОСЛЕДОВАТЕЛЬНОСТЬ
-     ============================================================ */
   var helpTitleMain = document.querySelector('.help-top .title-main');
   var helpTitleSub  = document.querySelector('.help-top .title-sub');
   var seqTimers = [];
@@ -701,14 +735,9 @@ function revealList(elements, startDelay, step){
     stopHelpSequence();
     quoteIndex = Math.floor(Math.random() * QUOTES.length);
 
-    /* 1. Заголовок — волной из тьмы */
     revealList([helpTitleMain], 0, 0);
     revealList([helpTitleSub],  260, 0);
 
-    /* 2. Цитата стартует строго после того, как заголовок
-          полностью отрисовался + короткая пауза.
-          «главное»: старт 260 мс, длительность 2400 мс → 2660 мс.
-          Пауза 240 мс → цитата стартует на 2900 мс. */
     var TITLE_DONE = 260 + REVEAL_DURATION + 240;
 
     seqTimers.push(setTimeout(function(){
@@ -717,11 +746,10 @@ function revealList(elements, startDelay, step){
       scheduleNext();
     }, TITLE_DONE));
 
-    /* 3. Нижняя надпись — спустя 2 с после начала появления цитаты */
     seqTimers.push(setTimeout(function(){
       if (!document.body.classList.contains('is-help')) return;
       showInfoAnimated();
-    }, TITLE_DONE + 2000));
+    }, TITLE_DONE + 2600));
   }
 
   function stopHelpSequence(){
@@ -844,6 +872,7 @@ uniform float uZoom;
 uniform vec2  uEyeUV;
 uniform vec2  uZoomTarget;
 uniform float uHelpZoom;
+uniform float uHasMap;
 
 float hash1(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float noise(vec2 p) {
@@ -884,6 +913,9 @@ void main() {
   vec2  uvSafe    = clamp(uv, vec2(0.001), vec2(0.999));
 
   vec3 col = texture2D(uMap, uvSafe).rgb;
+
+  vec3 fireOnly = vec3(0.020, 0.012, 0.008);
+  col = mix(fireOnly, col, uHasMap);
 
   vec2 bgUV = uvSafe * uImg * 0.06;
   float surfaceNoise  = fbm(bgUV + vec2(t * 0.015));
@@ -947,7 +979,7 @@ void main() {
   float blackOut = smoothstep(0.72, 1.0, zs);
   col *= (1.0 - blackOut);
 
-  col *= mix(0.35, 1.0, uReveal);
+  col *= uReveal;
 
   gl_FragColor = vec4(col, uReveal);
 }
@@ -963,7 +995,8 @@ void main() {
     uZoom:       { value: 0 },
     uEyeUV:      { value: new THREE.Vector2(0.34, 0.57) },
     uZoomTarget: { value: new THREE.Vector2(0.999, 0.001) },
-    uHelpZoom:   { value: 0 }
+    uHelpZoom:   { value: 0 },
+    uHasMap:     { value: 0 }
   };
 
   const material = new THREE.ShaderMaterial({
@@ -1042,26 +1075,33 @@ void main(){
   const parallaxTarget  = new THREE.Vector2(0, 0);
   const parallaxCurrent = new THREE.Vector2(0, 0);
 
+  function startReveal() {
+    if (revealStart >= 0) return;
+    revealStart = performance.now();
+  }
+  startReveal();
+
+  // ★ Портрет теперь тоже проявляется медленнее — синхронно с цитатой
+  let hasMapStart    = -1;
+  let hasMapDuration = 6000;
+
   new THREE.TextureLoader().load('pushkin.jpg', (tex) => {
     tex.colorSpace = THREE.SRGBColorSpace;
     tex.anisotropy = Math.min(16, renderer.capabilities.getMaxAnisotropy());
     tex.minFilter = THREE.LinearMipmapLinearFilter;
     tex.magFilter = THREE.LinearFilter;
     tex.generateMipmaps = true;
-    if (uniforms.uMap.value && uniforms.uMap.value.dispose) uniforms.uMap.value.dispose();
+    if (uniforms.uMap.value && uniforms.uMap.value.dispose) {
+      uniforms.uMap.value.dispose();
+    }
     uniforms.uMap.value = tex;
     uniforms.uImg.value.set(tex.image.width || 1, tex.image.height || 1);
+    hasMapStart = performance.now();
     resize();
-    startReveal();
+    computeHelpUV();
   }, undefined, () => {
-    document.body.classList.add('gl-broken');
-    startReveal();
+    console.warn('portrait load failed');
   });
-
-  function startReveal() {
-    if (revealStart >= 0) return;
-    revealStart = performance.now();
-  }
 
   window.addEventListener('pointermove', (e) => {
     const cx = window.innerWidth / 2;
@@ -1070,10 +1110,14 @@ void main(){
   }, { passive: true });
 
   function computeHelpUV() {
+    const iw = uniforms.uImg.value.x;
+    const ih = uniforms.uImg.value.y;
+    if (iw <= 1 && ih <= 1) return;
+
     const w = window.innerWidth;
     const h = window.innerHeight;
     const sa = w / h;
-    const ia = (uniforms.uImg.value.x / uniforms.uImg.value.y) || 1;
+    const ia = (iw / ih) || 1;
 
     const btnCX = 1 - 1 / w;
     const btnCY = 1 - 1 / h;
@@ -1170,6 +1214,11 @@ void main(){
     if (revealStart > 0) {
       const raw = (performance.now() - revealStart) / 2400;
       uniforms.uReveal.value = ease.expoOut(clamp(raw, 0, 1));
+    }
+
+    if (hasMapStart > 0 && uniforms.uHasMap.value < 1.0) {
+      const raw = (performance.now() - hasMapStart) / hasMapDuration;
+      uniforms.uHasMap.value = ease.expoOut(clamp(raw, 0, 1));
     }
 
     parallaxCurrent.lerp(parallaxTarget, Math.min(1, dt * 2.5));
