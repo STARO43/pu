@@ -5,34 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0a0806">
 <link rel="icon" href="/favicon.ico" sizes="any">
-
 <title>Пушкин. Главное</title>
-
 <meta name="description" content="Об Александре Пушкине. Каждый культурный человек должен здесь побывать.">
 <meta name="author" content="Пушкин. Главное">
 <meta name="robots" content="index, follow">
-
-<meta property="og:type"        content="website">
-<meta property="og:site_name"   content="Пушкин. Главное">
-<meta property="og:title"       content="Об Александре Пушкине. Каждый культурный человек должен здесь побывать">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Пушкин. Главное">
+<meta property="og:title" content="Об Александре Пушкине. Каждый культурный человек должен здесь побывать">
 <meta property="og:description" content="Об Александре Пушкине. Каждый культурный человек должен здесь побывать.">
-<meta property="og:image"       content="./pushkin.jpg">
-<meta property="og:image:alt"   content="Портрет Александра Пушкина в тёмной комнате при свете свечи">
-<meta property="og:locale"      content="ru_RU">
-
-<meta name="twitter:card"        content="summary_large_image">
-<meta name="twitter:title"       content="Об Александре Пушкине. Каждый культурный человек должен здесь побывать">
+<meta property="og:image" content="./pushkin.jpg">
+<meta property="og:image:alt" content="Портрет Александра Пушкина в тёмной комнате при свете свечи">
+<meta property="og:locale" content="ru_RU">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Об Александре Пушкине. Каждый культурный человек должен здесь побывать">
 <meta name="twitter:description" content="Об Александре Пушкине. Каждый культурный человек должен здесь побывать.">
-<meta name="twitter:image"       content="./pushkin.jpg">
-
+<meta name="twitter:image" content="./pushkin.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Yeseva+One&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
-
 <style>
 *,*::before,*::after{box-sizing:border-box}
-
 html,body{
   margin:0;height:100%;
   background:#0a0806;color:#fbf2ed;
@@ -44,13 +37,11 @@ html,body{
   -webkit-tap-highlight-color:transparent;
 }
 a,button{cursor:default}
-
 #stage{
   position:fixed;inset:0;z-index:2;background:#0a0806;
   touch-action:none;
 }
 #stage canvas{display:block;width:100%;height:100%}
-
 .visually-hidden{
   position:absolute !important;
   width:1px;height:1px;
@@ -58,16 +49,11 @@ a,button{cursor:default}
   clip:rect(0 0 0 0);clip-path:inset(50%);
   white-space:nowrap;border:0;
 }
-
 .reveal-item{
   opacity:0;
   filter:blur(8px);
   will-change:opacity, filter;
 }
-
-/* ============================================================
-   MENU
-   ============================================================ */
 #menu{
   position:fixed;inset:0;z-index:10;
   display:flex;flex-direction:column;justify-content:center;
@@ -82,7 +68,6 @@ body.is-menu #menu{
   pointer-events:auto;
   transition:opacity 1.2s cubic-bezier(.4,0,.2,1) 0.6s;
 }
-
 .menu-link{
   position:relative;
   display:inline-block;
@@ -96,7 +81,6 @@ body.is-menu #menu{
   margin-bottom:clamp(1rem,3vw,2rem);
   touch-action:manipulation;
 }
-
 #help-btn{
   position:fixed;
   right:0;bottom:0;
@@ -115,15 +99,12 @@ body.is-menu #menu{
   transition:color 0.3s ease;
   touch-action:manipulation;
 }
-/* Увеличенная hit-area без изменения визуального размера.
-   На десктопе не мешает: клик по ::before всё равно попадает в кнопку. */
 #help-btn::before{
   content:'';
   position:absolute;
   top:50%;left:50%;
   width:44px;height:44px;
   transform:translate(-50%,-50%);
-  /* на десктопе это невидимая зона, курсор/вид не меняются */
 }
 #help-btn:hover,
 #help-btn:focus,
@@ -134,8 +115,6 @@ body.is-menu #menu{
 }
 body.is-menu #help-btn{ opacity:0; pointer-events:none; }
 body.is-help  #help-btn{ opacity:0; pointer-events:none; }
-
-
 #help-menu{
   position:fixed;inset:0;z-index:11;
   display:grid;
@@ -154,14 +133,11 @@ body.is-help #help-menu{
   pointer-events:auto;
   transition: opacity 1.2s cubic-bezier(.4,0,.2,1) 0.6s;
 }
-
-/* ---------- ВЕРХ ---------- */
 .help-top{
   display:flex;flex-direction:column;align-items:center;
   text-align:center;
   gap: clamp(10px, 1.6vh, 18px);
 }
-
 .help-title{
   display:flex;flex-direction:column;align-items:center;
   gap: clamp(8px, 1.2vh, 14px);
@@ -183,10 +159,6 @@ body.is-help #help-menu{
   color:#f4e8d8;opacity:0.5;
   padding-left:0.7em;
 }
-
-/* ============================================================
-   ЦИТАТА — «дорогое» многослойное проявление
-   ============================================================ */
 .help-quote-wrap{
   display:flex;flex-direction:column;
   align-items:center;justify-content:center;
@@ -196,41 +168,29 @@ body.is-help #help-menu{
   margin:0 auto;
   padding: clamp(24px, 5vh, 56px) 0;
   overflow:hidden;
-
-  /* скрытое состояние */
   opacity:0;
   filter: brightness(0.10) blur(10px);
   transform: scale(1.020);
-
-  /* ★ Разные слои — разная скорость и задержка.
-        opacity → быстрее всех, filter → с паузой, transform → очень долго */
   transition:
     opacity   9s  cubic-bezier(.12,.88,.36,1) 0s,
     filter    8s  cubic-bezier(.16,.84,.44,1) 0.6s,
     transform 14s cubic-bezier(.10,.90,.34,1) 0s;
-
   will-change: opacity, filter, transform;
 }
 .help-quote-wrap.is-shown{
   opacity:1;
   filter: brightness(1) blur(0);
   transform: scale(1);
-
-  /* ★ Уход — быстрее появления, чтобы не тормозить смену */
   transition:
     opacity   5s cubic-bezier(.55,0,.75,.2),
     filter    5s cubic-bezier(.55,0,.75,.2),
     transform 5s cubic-bezier(.55,0,.75,.2);
-
-  /* ★ «Дыхание» после проявления */
   animation: quoteBreath 11s ease-in-out 9s infinite alternate;
 }
-
 @keyframes quoteBreath{
   from { opacity: 1;    filter: brightness(1.00) blur(0); }
   to   { opacity: 0.94; filter: brightness(0.93) blur(0.15px); }
 }
-
 .help-quote{
   font-family:'Literata', Georgia, serif;
   font-weight:400;
@@ -243,15 +203,12 @@ body.is-help #help-menu{
   hyphens:auto;
   width:100%;
 }
-
 .quote-p{
   margin:0 0 1.15em 0;
 }
 .quote-p:last-child{
   margin-bottom:0;
 }
-
-/* ★ Каскад слов — медленный, длинный */
 .help-quote .word{
   display:inline-block;
   opacity:0;
@@ -268,8 +225,6 @@ body.is-help #help-menu{
   filter:blur(0);
   transform: translateY(0);
 }
-
-/* Автор — приходит вслед за словами, сам тоже долгий */
 .help-author{
   font-family:'Literata', Georgia, serif;
   font-weight:500;font-style:normal;
@@ -279,7 +234,6 @@ body.is-help #help-menu{
   color:#f4e8d8;
   margin:0;padding-left:0.5em;
   text-align:center;
-
   opacity:0;
   filter: blur(2px);
   transition:
@@ -290,14 +244,11 @@ body.is-help #help-menu{
   opacity:0.92;
   filter: blur(0);
 }
-
-/* ---------- НИЗ ---------- */
 .help-footer{
   display:flex;justify-content:center;
   align-items:flex-end;
   text-align:center;
 }
-
 .help-info{
   font-family:'Literata', Georgia, serif;
   font-weight:400;
@@ -318,7 +269,6 @@ body.is-help #help-menu{
   opacity:0.42;
   filter: brightness(1) blur(0);
 }
-
 #noscript-fallback{
   position:fixed;inset:0;z-index:50;
   display:none;
@@ -345,7 +295,6 @@ body.is-help #help-menu{
   color:#f4e8d8;opacity:0.7;margin:0;
 }
 noscript #noscript-fallback{ display:flex; }
-
 #blink-overlay{
   position:fixed;inset:0;z-index:20;pointer-events:none;
   display:flex;flex-direction:column;
@@ -355,7 +304,6 @@ noscript #noscript-fallback{ display:flex; }
   transform:scaleY(0);transform-origin:top;
 }
 .blink-lid.bottom{ transform-origin:bottom; }
-
 @media (prefers-reduced-motion: reduce){
   #menu{ transition-duration:0.3s; transition-delay:0s; }
   #help-menu{ transition-duration:0.3s; transition-delay:0s; }
@@ -369,14 +317,7 @@ noscript #noscript-fallback{ display:flex; }
     transition-delay:0s !important;
   }
 }
-
-/* ============================================================
-   МОБИЛЬНЫЕ ПРАВКИ — только внутри @media (max-width: 600px).
-   Всё, что вне этого блока, идентично исходнику.
-   ============================================================ */
 @media (max-width: 600px){
-
-  /* safe-area: на десктопе env() = 0, но здесь блок и так не применяется */
   #help-menu{
     padding:
       max(clamp(24px, 4.5vh, 48px), env(safe-area-inset-top))
@@ -384,35 +325,25 @@ noscript #noscript-fallback{ display:flex; }
       max(clamp(24px, 4.5vh, 48px), env(safe-area-inset-bottom))
       max(clamp(20px, 5vw, 72px), env(safe-area-inset-left));
   }
-
-  /* футер-подсказка: разрешаем перенос, ограничиваем ширину */
   .help-info{
     white-space:normal;
     max-width:92vw;
     text-align:center;
     letter-spacing:0.02em;
   }
-
-  /* трекинг подзаголовка на узком экране */
   .title-sub{
     letter-spacing:0.32em;
     padding-left:0.32em;
   }
-
-  /* каскад слов: чуть меньше blur, чтобы не джанкало на слабых Android */
   .help-quote .word{
     filter:blur(3px);
   }
-
-  /* fallback-скролл, если цитата всё же не влезла (включается только при переполнении) */
   .help-quote-wrap{
     overflow-y:auto;
     -webkit-overflow-scrolling:touch;
     overscroll-behavior:contain;
     touch-action:pan-y;
   }
-
-  /* кнопка ? — учитываем home-индикатор iOS */
   #help-btn{
     bottom:env(safe-area-inset-bottom);
     right:env(safe-area-inset-right);
@@ -534,9 +465,6 @@ function revealList(elements, startDelay, step){
 (function(){
   var isMenuOpen = false;
   var isHelpOpen = false;
-
-  // ★ Единая мобильная проверка (только для текста подсказки;
-  //    тайминги цитаты остаются глобальными, см. ниже).
   var MOBILE_MQ = window.matchMedia('(max-width: 600px)');
 
   function setMenu(open){
@@ -655,7 +583,6 @@ function revealList(elements, startDelay, step){
     }
   ];
 
-  // ★ Тайминги остаются глобальными (десктоп не меняется).
   var SHOW_MS  = 36000;
   var FADE_OUT = 7500;
 
@@ -669,7 +596,6 @@ function revealList(elements, startDelay, step){
   var quoteTimer = null;
   var quoteIndex = 0;
 
-  // ★ Только текст подсказки меняется на мобильных/тач. Десктоп — как было.
   function applyInfoText(){
     if (coarse){
       infoEl.textContent = 'Для связи @vnvax';
@@ -697,7 +623,6 @@ function revealList(elements, startDelay, step){
         var span = document.createElement('span');
         span.className = 'word';
         span.textContent = w;
-        // ★ Каскадная задержка через все абзацы (глобальная, как раньше)
         span.style.transitionDelay =
           (globalWordIndex * (1000 / WORDS_PER_SEC)) + 'ms';
         globalWordIndex++;
@@ -738,8 +663,6 @@ function revealList(elements, startDelay, step){
 
     quoteEl.style.width = availW + 'px';
 
-    // ★ На мобильных разрешаем чуть меньший минимум (десктоп не затронут:
-    //    при ширине > 600px isMobile === false, lo остаётся 11).
     var isMobile = MOBILE_MQ.matches;
     var lo = isMobile ? 9 : 11, hi = 44, best = lo;
     for (var i = 0; i < 14; i++){
@@ -764,7 +687,6 @@ function revealList(elements, startDelay, step){
     fitQuote();
     void wrapEl.offsetHeight;
 
-    // Двойной rAF — фиксируем стартовое состояние
     requestAnimationFrame(function(){
       requestAnimationFrame(function(){
         if (!document.body.classList.contains('is-help')) return;
@@ -774,7 +696,6 @@ function revealList(elements, startDelay, step){
   }
 
   function hideQuoteAnimated(done){
-    // ★ Реверс-каскад: последнее слово уходит первым
     var words = quoteEl.querySelectorAll('.word');
     var n = words.length;
     var stepMs = 1000 / EXIT_WORDS_PER_SEC;
@@ -867,9 +788,6 @@ function revealList(elements, startDelay, step){
     if (document.body.classList.contains('is-help')) fitQuote();
   });
 
-  // ★ iOS: visualViewport меняется при показе адресной строки / повороте.
-  //   На десктопе visualViewport совпадает с innerHeight → лишний вызов
-  //   fitQuote() просто пересчитает то же самое (визуально ничего не меняется).
   if (window.visualViewport){
     window.visualViewport.addEventListener('resize', function(){
       if (document.body.classList.contains('is-help')) fitQuote();
@@ -943,7 +861,7 @@ if (!NO_WEBGL) {
   const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
   camera.position.set(0, 0, 5);
 
-  const vertexShader = /* glsl */`
+  const vertexShader = `
 varying vec2 vUv;
 void main() {
   vUv = uv;
@@ -951,7 +869,7 @@ void main() {
 }
 `;
 
-  const fragmentShader = /* glsl */`
+  const fragmentShader = `
 precision highp float;
 varying vec2 vUv;
 
@@ -1174,7 +1092,6 @@ void main(){
   }
   startReveal();
 
-  // ★ Портрет теперь тоже проявляется медленнее — синхронно с цитатой
   let hasMapStart    = -1;
   let hasMapDuration = 6000;
 
