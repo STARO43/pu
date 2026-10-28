@@ -2,7 +2,6 @@
 <html lang="ru">
 <head>
 <link href="https://fonts.googleapis.com/css2?family=Yeseva+One&display=swap" rel="stylesheet">
-
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Пушкин. Стихотворения</title>
@@ -387,11 +386,6 @@
     return;
   }
 
-  // ============ CONFIG ============
-  // ИЗМЕНЕНО (починка начального вращения):
-  //   fastSpinMult 8.5 -> 15 (компенсация убранного setInterval-буста)
-  //   fastSpinRampDur 0.5 -> 0.7 (плавнее ramp)
-  //   revealDelay 0.35 -> 0.5 (чуть дольше медленная фаза)
   const CONFIG = {
     radius: 220,
     planeSize: 130,
@@ -414,7 +408,6 @@
   const getRadius    = () => (mobile() ? 136 : CONFIG.radius);
   const getLogoOrbitRadius = () => (mobile() ? 150 : CONFIG.logoOrbitRadius);
 
-  // ============ mini gsap ============
   const Eases = {
     power2inOut: (t) => (t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2),
     power2in:    (t) => t*t,
@@ -455,9 +448,6 @@
     }
   }
 
-  // ============================================================
-  // ПАЛИТРЫ
-  // ============================================================
   const PALETTES = {
     civic_deep: { paper:"#e3b8ab", page:"#fbf2ed", hero:"radial-gradient(circle at 30% 20%, #f2d8ce 0%, #e0b0a0 55%, #c98a78 100%)", rule:"rgba(140,35,25,0.30)", meta:"rgba(120,45,35,0.58)", year:"rgba(120,45,35,0.42)", border:"rgba(140,35,25,0.16)" },
     civic_warm: { paper:"#ecd0c2", page:"#fcf4ee", hero:"radial-gradient(circle at 30% 20%, #f8e4d8 0%, #ebc8b8 55%, #d8a090 100%)", rule:"rgba(165,60,40,0.28)", meta:"rgba(140,55,40,0.55)", year:"rgba(140,55,40,0.40)", border:"rgba(165,60,40,0.14)" },
@@ -1101,7 +1091,6 @@ XII
 Блеснет любовь улыбкою прощальной.`, assessment: "«Элегия» — философское принятие трагизма бытия без уныния." },
   };
 
-  // ============ Shaders ============
   const tileVert = `
     varying vec2 vUv;
     void main() {
@@ -1311,7 +1300,6 @@ XII
     });
   }
 
-  // ============ state ============
   let isLoading = true;
   let isCollapsing = false;
   let exploded = false;
@@ -1323,7 +1311,6 @@ XII
   let exitFaded = false;
   const spinAxis = new THREE.Vector3(0, 1, 0);
 
-  // ============ preloader ============
   let spinAngle = 0;
   function placePreloaderTiles() {
     if (isCollapsing) return;
@@ -1345,7 +1332,6 @@ XII
 
   layoutBasePositions();
 
-  // ИЗМЕНЕНО: ease power2in -> power2inOut, чтобы ramp входил и выходил мягко
   function startFastSpin() {
     tween(fastRamp, { v: 1 }, {
       duration: CONFIG.fastSpinRampDur,
@@ -1356,7 +1342,7 @@ XII
 
   function startCollapseThenExplode() {
     isCollapsing = true;
-const stackH = pxToWorld(CONFIG.stackGap);
+    const stackH = pxToWorld(CONFIG.stackGap);
 
     tiles.forEach((t, i) => {
       const fromPos = t.mesh.position.clone();
@@ -1416,7 +1402,6 @@ const stackH = pxToWorld(CONFIG.stackGap);
     });
   }
 
-  // ИЗМЕНЕНО: убран setInterval-буст, единственный источник скорости — RAF-цикл по dt
   setTimeout(() => {
     startFastSpin();
     setTimeout(() => {
@@ -1424,7 +1409,6 @@ const stackH = pxToWorld(CONFIG.stackGap);
     }, CONFIG.fastSpinRampDur * 1000);
   }, CONFIG.revealDelay * 1000);
 
-  // ============ input ============
   let vel = 0, velX = 0, acc = 0, accX = 0, prev = 0, prevX = 0;
   let pointerDown = false;
   let lastPx = 0, lastPy = 0;
@@ -1462,7 +1446,6 @@ const stackH = pxToWorld(CONFIG.stackGap);
     pointerDown = false;
   });
 
-  // ============ raycast ============
   const raycaster = new THREE.Raycaster();
   const ndc = new THREE.Vector2();
   const tileMeshes = tiles.map((t) => t.mesh);
@@ -1523,7 +1506,6 @@ const stackH = pxToWorld(CONFIG.stackGap);
     tapCancelled = true;
   });
 
-  // ============ resize ============
   function resize() {
     W = host.clientWidth || window.innerWidth;
     H = host.clientHeight || window.innerHeight;
@@ -1536,9 +1518,6 @@ const stackH = pxToWorld(CONFIG.stackGap);
   resize();
   new ResizeObserver(resize).observe(host);
 
-  // ============================================================
-  // CASE PAGE
-  // ============================================================
   const casePage    = document.getElementById("case-page");
   const caseScroll  = document.getElementById("case-scroll");
   const caseHeroMedia = document.getElementById("case-hero-media");
@@ -1847,9 +1826,6 @@ const stackH = pxToWorld(CONFIG.stackGap);
     }
   }, true);
 
-  // ============================================================
-  // SHATTER SYSTEM
-  // ============================================================
   const IS_MOBILE_S = window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768;
   const SHATTER_TIME_SCALE  = IS_MOBILE_S ? 2.1 : 1.0;
   const SHATTER_DELAY_SCALE = IS_MOBILE_S ? 1.8 : 1.0;
@@ -1901,7 +1877,7 @@ const stackH = pxToWorld(CONFIG.stackGap);
     sRenderer.domElement.style.zIndex = "999";
     sRenderer.domElement.style.display = "none";
     sRenderer.domElement.style.pointerEvents = "none";
-       sRenderer.domElement.style.background = "#0d0b0a";
+    sRenderer.domElement.style.background = "#0d0b0a";
     document.body.appendChild(sRenderer.domElement);
 
     window.addEventListener("resize", onShatterResize, false);
@@ -2241,7 +2217,7 @@ const stackH = pxToWorld(CONFIG.stackGap);
     }
 
     function stepStack() {
-const stackH = pxToWorld(CONFIG.stackGap);
+      const stackH = pxToWorld(CONFIG.stackGap);
       let done = 0;
 
       tiles.forEach((t, i) => {
@@ -2308,7 +2284,6 @@ const stackH = pxToWorld(CONFIG.stackGap);
     });
   }
 
-  // ============ tick ============
   let last = performance.now();
   function tick(now) {
     requestAnimationFrame(tick);
