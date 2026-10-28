@@ -274,27 +274,7 @@
   }
   .poem p:last-child { margin-bottom: 0; }
 
-  .case-actions {
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 0 clamp(24px, 4vw, 40px) clamp(56px, 8vw, 100px);
-    display: flex;
-    gap: 28px;
-    align-items: center;
-    flex-wrap: wrap;
-    background: var(--bg-1);
-  }
-  .case-action {
-    appearance: none; border: none; background: none; padding: 0; margin: 0;
-    color: var(--ink-soft); font: inherit;
-    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 500;
-    cursor: default;
-    text-decoration: none;
-  }
-  .case-actions .dot {
-    display: inline-block; width: 3px; height: 3px; border-radius: 50%;
-    background: var(--ink-mute); vertical-align: middle;
-  }
+
 
   .case-eval {
     max-width: 760px;
@@ -364,11 +344,7 @@
 
       <article class="case-article" id="case-article"></article>
 
-      <div class="case-actions">
-        <button class="case-action" id="case-copy" type="button">Скопировать</button>
-        <span class="dot" aria-hidden="true"></span>
-        <a class="case-action" id="case-mail" href="#">Отправить</a>
-      </div>
+      
 
       <section class="case-eval" id="case-eval"></section>
     </div>
@@ -1525,8 +1501,6 @@ XII
   const caseClose   = document.getElementById("case-close");
   const caseExit    = document.getElementById("case-exit");
   const caseArticle = document.getElementById("case-article");
-  const caseCopyBtn = document.getElementById("case-copy");
-  const caseMail    = document.getElementById("case-mail");
   const caseEval    = document.getElementById("case-eval");
 
   let caseOpen = false;
@@ -1718,57 +1692,9 @@ XII
     else caseClose.classList.remove("is-faded");
   }, { passive: true });
 
-  function getArticleText() {
-    const parts = [];
-    const h1 = caseTitleEl.getAttribute("aria-label");
-    if (h1) parts.push(h1 + "\n");
-    const year = document.getElementById("case-year").textContent;
-    if (year) parts.push("Год: " + year);
-    const place = document.getElementById("case-role").textContent;
-    if (place) parts.push("Место: " + place);
-    const situation = document.getElementById("case-discipline").textContent;
-    if (situation) parts.push("Обстановка: " + situation);
-    parts.push("");
 
-    const poemEl = caseArticle.querySelector(".poem");
-    if (poemEl) {
-      poemEl.querySelectorAll("p").forEach((p) => parts.push(p.textContent + "\n"));
-    }
 
-    const evalText = document.querySelector(".case-eval__text");
-    if (evalText) parts.push("\n" + evalText.textContent);
 
-    return parts.join("\n").trim();
-  }
-
-  async function copyArticleText() {
-    const text = getArticleText();
-    try {
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(text);
-      } else {
-        const ta = document.createElement("textarea");
-        ta.value = text;
-        ta.style.position = "fixed";
-        ta.style.opacity = "0";
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        document.body.removeChild(ta);
-      }
-    } catch (err) {}
-  }
-
-  function updateMailLink() {
-    const title = caseTitleEl.getAttribute("aria-label") || "Стихотворение";
-    const body = getArticleText().slice(0, 1800);
-    const subject = encodeURIComponent("А. С. Пушкин: " + title);
-    const bodyEnc = encodeURIComponent(body);
-    caseMail.href = `mailto:?subject=${subject}&body=${bodyEnc}`;
-  }
-
-  caseCopyBtn.addEventListener("click", copyArticleText);
-  caseMail.addEventListener("click", () => setTimeout(updateMailLink, 0));
 
   const caseDrag = {
     active: false, pointerId: null, startY: 0, startScroll: 0, moved: false,
