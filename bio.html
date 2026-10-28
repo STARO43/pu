@@ -6,17 +6,15 @@
 <meta name="description" content="Александр Сергеевич Пушкин. Биография: детство, семья, лицей, ссылки, творчество, гибель.">
 <meta name="theme-color" content="#fbf2ed">
 <title>Пушкин. Биография</title>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..500&amp;family=Literata:ital,opsz,wght@0,7..72,400..500;1,7..72,400&amp;family=Yeseva+One&amp;display=swap" rel="stylesheet"><script>document.documentElement.classList.replace('no-js','js');</script>
-
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..500&amp;family=Literata:ital,opsz,wght@0,7..72,400..500;1,7..72,400&amp;family=Yeseva+One&amp;display=swap" rel="stylesheet">
+<script>document.documentElement.classList.replace('no-js','js');</script>
 <style>
 :root{
   --font-title: "Yeseva One", Georgia, serif;
   --font-body: "Literata", Georgia, serif;
   --font-sans: "Golos Text", -apple-system, sans-serif;
-
   --bg: #fbf2ed;
   --ink: #0a0a0a;
   --ink-soft: rgba(10,10,10,.62);
@@ -24,14 +22,11 @@
   --accent: #8c2319;
   --line: rgba(140,35,25,.16);
   --line-soft: rgba(140,35,25,.08);
-
   --ease-enter: cubic-bezier(.16,1,.3,1);
   --ease-hover: cubic-bezier(.4,0,.2,1);
 }
-
 *,*::before,*::after{box-sizing:border-box}
 blockquote { margin: 0; padding: 0; }
-
 html, body {
   margin:0; padding:0; width:100%; max-width:100vw;
   overflow-x:hidden; overflow-x:clip;
@@ -53,8 +48,6 @@ body{
   -moz-osx-font-smoothing:grayscale;
   text-rendering:optimizeLegibility;
 }
-
-/* hide body until fonts are ready and intro is about to run */
 html.js.preload body {
   visibility: hidden;
   animation: preload-fallback 0.01s 3.5s forwards;
@@ -62,14 +55,11 @@ html.js.preload body {
 @keyframes preload-fallback {
   from, to { visibility: visible; }
 }
-
 ::selection{background:rgba(140,35,25,.15);color:var(--ink)}
 [hidden]{display:none!important}
 *{cursor:default}
 a,button,[role="button"]{cursor:default;-webkit-tap-highlight-color:transparent}
 :focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:2px}
-
-/* ================= top close (cross, top-right) ================= */
 .case-close{
   position:fixed;
   top:22px; right:clamp(18px,3vw,34px);
@@ -94,14 +84,10 @@ a,button,[role="button"]{cursor:default;-webkit-tap-highlight-color:transparent}
 .case-close::after{transform:translate(-50%,-50%) rotate(-45deg)}
 .case-close.is-faded::before,
 .case-close.is-faded::after{opacity:.08}
-
-/* ================= layout ================= */
 .page{
   max-width:36rem; margin:0 auto;
   padding:clamp(3rem,10vw,5rem) 1.5rem calc(6rem + env(safe-area-inset-bottom,0px));
 }
-
-/* ================= hero ================= */
 .hero{margin:0 0 clamp(2.5rem,8vw,4rem)}
 .eyebrow{
   margin:0 0 2rem;
@@ -148,8 +134,6 @@ h1{
   background: currentColor;
   opacity: .5;
 }
-
-/* ================= text ================= */
 .para{
   position:relative;
   margin:0 0 1.4em;
@@ -159,7 +143,6 @@ h1{
 .para:last-of-type{margin-bottom:0}
 .lead{font-size:1.1em;line-height:1.55;color:var(--ink-soft)}
 .para a,.quote a{color:inherit;text-decoration:none;border:0;background:none}
-
 .quote{
   display:block; width:100%; max-width:100%;
   margin:2.5em 0 0 0; padding:0 0 2.5em 0;
@@ -174,8 +157,6 @@ h1{
   font-size:.8em; letter-spacing:.1em; color:var(--muted);
 }
 .quote .author::before{content:none}
-
-/* ================= bookmark ================= */
 .para.marked{
   padding-left:1.1rem;
   border-left:2px solid var(--accent);
@@ -194,8 +175,6 @@ h1{
   0%,100%{background-color:transparent}
   18%,62%{background-color:rgba(140,35,25,.06)}
 }
-
-/* ================= colophon ================= */
 .colophon {
   margin: 4.5rem 0 0;
   text-align: center;
@@ -203,8 +182,6 @@ h1{
   opacity: .35;
   font-size: 1.3rem;
 }
-
-/* ================= desktop ================= */
 @media (min-width:768px){
   body{
     font-family:var(--font-body);
@@ -218,7 +195,6 @@ h1{
   }
   .quote{font-style:italic}
   .quote .author{font-style:italic}
-
   h1{
     font-family:var(--font-title);
     font-weight:400;
@@ -252,11 +228,8 @@ h1{
     background: currentColor;
     opacity: .5;
   }
-
   .page{user-select:none;-webkit-user-select:none}
 }
-
-/* ================= FAB ================= */
 .fab{
   position:fixed;
   right:6px; bottom:calc(6px + env(safe-area-inset-bottom,0px));
@@ -278,8 +251,6 @@ h1{
   transition:fill .3s var(--ease-enter),stroke .3s var(--ease-enter);
 }
 .fab.on svg path{fill:var(--accent);stroke:var(--accent)}
-
-/* ================= toast ================= */
 .toast{
   position:fixed;
   top:calc(1rem + env(safe-area-inset-top,0px));
@@ -298,9 +269,7 @@ h1{
 </style>
 </head>
 <body>
-
 <a class="case-close" href="/index" id="case-close" aria-label="На главную"></a>
-
 <main>
   <article class="page" id="page">
     <header class="hero">
@@ -309,129 +278,78 @@ h1{
       <p class="dates">1799 — 1837</p>
       <span class="hero-rule" aria-hidden="true">★</span>
     </header>
-
     <p class="para lead" id="p1">Александр Сергеевич Пушкин — гений, народный поэт, родоначальник русской литературы, создатель нашего литературного языка. Его жизненный путь и творческое наследие представляют собой незыблемый фундамент культурной самобытности и духовного возрождения нации, яркое свидетельство того, как передовая личность способна стать выразителем глубинных стремлений народа.</p>
-
     <p class="para" id="p2">Пушкина с детства окружали две культуры — дворянская, европейская и народная, русская.</p>
-
     <p class="para" id="p3">Европейство шло от семьи. Отец, Сергей Львович, — из знатного, но обедневшего дворянства. Дома говорили по-французски. У Пушкиных бывали Державин, Карамзин, Жуковский и другие литераторы. Дядя, Василий Львович, был известным поэтом. Он привил племяннику любовь к слову. Мальчик страстно пристрастился к чтению и днями пропадал в отцовском кабинете среди книг.</p>
-
     <p class="para" id="p4">Русскость же несла няня — знаменитая Арина Родионовна. Её сказки и рассказы о простой жизни открыли Пушкину мир народных нравов, обычаев, традиций, мудростей.</p>
-
     <p class="para" id="p5">В 1811 году Пушкин стал лицеистом. Царскосельский лицей был новым, закрытым и элитным заведением — туда принимали только дворянских детей из высшего общества. Там Пушкин не только задыхался от консерватизма и казарменных порядков, но и читал Ломоносова, Державина, Карамзина, Жуковского, Батюшкова. Не меньше тянуло его к французским просветителям — Вольтеру и Руссо. Он брался и за запрещённую литературу, включая Радищева, а на лекциях профессора Куницына впитывал идеи политической свободы и гражданского равенства.</p>
-
     <p class="para" id="p6">Как это ни странно, но лицей дал Пушкину политическое воспитание. Он близко сошёлся с Пущиным и Кюхельбекером — будущими декабристами, познакомился с Чаадаевым. Освободительные идеи прогрессивной дворянской молодёжи были ему близки. Там же он продолжал писать, участвовал в литературном кружке и лицейских рукописных журналах.</p>
-
     <p class="para" id="p7">В 1814 году Пушкин впервые вышел в печать — со стихотворением <a href="https://www.culture.ru/poems/5096/k-drugu-stikhotvorcu" target="_blank" rel="noopener">«К другу стихотворцу»</a>. А в 1815 году на переводных экзаменах произошло событие, которое запомнилось надолго: в присутствии Державина он прочёл <a href="https://www.culture.ru/poems/5325/vospominaniya-v-carskom-sele" target="_blank" rel="noopener">«Воспоминания в Царском Селе»</a> (1814), и маститый поэт пришёл в восторг.</p>
-
     <p class="para" id="p8">Пушкин рвался стать литератором и заниматься общественной жизнью. Ещё в лицее он вступает в общество, боровшееся за простоту литературного языка.</p>
-
     <p class="para" id="p9">В 1817 году Пушкин кончил лицей и получил назначение в министерство иностранных дел. Служба его, впрочем, почти не касалась: карьера чиновника была ему совершенно безразлична, а вся жизнь уходила в поэзию. Оказавшись в Петербурге, он с головой окунулся в общественно-политическую жизнь столицы, близко сошёлся с друзьями-декабристами и глубоко проникся их идеями. В 1819 году вступил в литературное общество «Зелёная лампа», прямо связанное с тайным обществом декабристов.</p>
-
     <p class="para" id="p10">Пушкин был горяч и откровенен — он смело и открыто высказывал свои вольнолюбивые стремления в стихотворениях, которые расходились самописно. Царь Александр I был настолько встревожен его нишевой популярностью в столице и даже крупных городах, что планировал сослать поэта в Сибирь или Соловки.</p>
-
     <p class="para" id="p11">Спасли Александра Сергеевича только его придворные друзья. Поэтому в 1820 году его удалили из Петербурга путём служебного назначения в Екатеринослав (Днепропетровск). Перед отъездом он успел закончить первую поэму — <a href="https://www.culture.ru/poems/5061/ruslan-i-lyudmila-poema" target="_blank" rel="noopener">«Руслан и Людмила»</a> (1817—1819). В ней уже звучали ноты свободолюбия, а написана она была в реалистическом стиле. Жуковский, прочитав её, одарил Пушкина званием ученика-победителя.</p>
-
     <p class="para" id="p12">Летом 1820 года Пушкин приехал в Екатеринослав и вскоре простудился и заболел. Там его застала семья знакомых — Раевских. С ними поэт отправился лечиться на Кавказ, а потом жил у них в Крыму, в Гурзуфе. Глава семейства — Н. Раевский — один из предводителей русской армии во время Отечественной войны 1812 года, при Бородине командовал защитой батареи.</p>
-
     <p class="para" id="p13">Пушкин писал брату:</p>
-
     <blockquote class="para quote" id="p14">
       «Счастливейшие минуты жизни моей провел я посереди семейства почтенного Раевского. Я не видел в нем героя, славу русского войска, я в нем любил человека с ясным умом, с простой, прекрасной душою; снисходительного, попечительного друга, всегда милого, ласкового хозяина. Свидетель Екатерининского века, памятник 12 года; человек без предрассудков, с сильным характером и чувствительный, он невольно привяжет к себе всякого, кто только достоин понимать и ценить его высокие качества».
     </blockquote>
-
     <p class="para" id="p15">Тогда Пушкин ближе познакомился с творчеством Байрона. Вольнолюбивые стихи великого английского поэта-изгнанника оказались созвучны настроениям русского гонимого поэта. Под влиянием романтических поэм Байрона Пушкин задумал <a href="https://www.culture.ru/poems/4435/kavkazskii-plennik" target="_blank" rel="noopener">«Кавказского пленника»</a>, <a href="https://www.culture.ru/poems/5085/bakhchisaraiskii-fontan" target="_blank" rel="noopener">«Бахчисарайский фонтан»</a> и <a href="https://www.culture.ru/poems/5084/bratya-razboiniki" target="_blank" rel="noopener">«Братьев-разбойников»</a>. Закончил он их позже, в Кишинёве, куда приехал в сентябре 1820 года.</p>
-
     <p class="para" id="p16">Кишинёвские три года Пушкин прожил на подъёме — и как человек, и как политический мыслитель. Его кругом стали люди, связанные с тайными обществами: он запросто бывал у Орлова, близко сошёлся с Раевским — майором, поражавшим острым умом и начитанностью. В Каменке, у Давыдова, собирались те, кому позже суждено было выйти на Сенатскую площадь. На юге он встретил Пестеля, главу Южного общества, и назвал его одним из самых самобытных умов своего времени. Свидетельства Пущина и Долгорукова сходятся: Пушкин думал с декабристами в унисон — при том что формально в заговор не входил и о самом его существовании не догадывался. В организацию его и не звали: ставка делалась на военных, а поэт был бы там лишним. Одновременно он следил за освободительными движениями в Европе — греческим, испанским, итальянским — и открыто им сочувствовал. Сам Кишинёв ему опостылел: он рвался в отпуск, но бюрократы его не отпускали. Друзья долго обивали пороги, пока не выхлопотали перевод в Одессу, в канцелярию Воронцова. Там, с 1823 года, Пушкин обзавёлся приятелями и полезными знакомствами, а службу всё больше воспринимал как досадную помеху — и всё плотнее уходил в литературу.</p>
-
     <blockquote class="para quote" id="p17">
       «Пушкин — первый почувствовал, что литература — национальное дело первостепенной важности, что она выше работы в канцеляриях и службы во дворце, — он первый поднял звание литератора на высоту до него недосягаемую». <span class="author">Горький</span>
     </blockquote>
-
     <p class="para" id="p18">К концу 1823 года Пушкин берётся за <a href="https://www.culture.ru/poems/5111/cygany" target="_blank" rel="noopener">«Цыган»</a> — поэму, которую допишет уже в Михайловском. Тогда же, в Одессе, он начинает энциклопедию русской жизни <a href="https://www.culture.ru/poems/4481/evgenii-onegin" target="_blank" rel="noopener">«Евгения Онегина»</a>. Он будет кончен только через девять лет. Но и одесская служба не задалась: поэт держался независимо, требовал, чтобы в нём видели прежде всего поэта, а не чиновника, — и это вывело из себя Воронцова. Граф, надменный чван, смотревший на подчинённых свысока (особенно на ссыльных), в ответ принялся писать доносы. Кончилось тем, что в 1824 году по царскому распоряжению Пушкина выслали из Одессы в родительское имение — село Михайловское Псковской губернии.</p>
-
     <p class="para" id="p19">В первых числах августа 1824 года Пушкин прибыл во вторую ссылку — и сразу попал под полицейский присмотр. Но михайловское уединение он обратил себе на пользу: взялся за историю России, перечитывал Шекспира и Гёте, следил за новыми литературными веяниями, записывал народные песни и сказки, вникал в крестьянский быт. Долгими зимними вечерами он слушал русские народные сказки и песни — и это питало его собственное творчество. Именно здесь появились <a href="https://www.culture.ru/poems/5062/boris-godunov" target="_blank" rel="noopener">«Борис Годунов»</a> (1825), несколько глав <a href="https://www.culture.ru/poems/4481/evgenii-onegin" target="_blank" rel="noopener">«Евгения Онегина»</a>, поэма <a href="https://www.culture.ru/poems/5082/graf-nulin" target="_blank" rel="noopener">«Граф Нулин»</a> (1825) и множество стихотворений. А к концу 1825 года увидел свет первый сборник его стихов.</p>
-
     <p class="para" id="p20">Следствие и аналитика, разбор бумаг и допросы участников восстания 14 декабря 1825 года на Сенатской площади в Петербурге показали, что политические стихи Пушкина — <a href="https://www.culture.ru/poems/4455/derevnya" target="_blank" rel="noopener">«Деревня»</a>, <a href="https://www.culture.ru/poems/6007/volnost-oda" target="_blank" rel="noopener">«Вольность»</a>, <a href="https://www.culture.ru/poems/4584/kinzhal" target="_blank" rel="noopener">«Кинжал»</a> и другие — сыграли огромную роль в подготовке выступления, оказав сильнейшее идейное и эмоциональное влияние на молодых прогрессивных офицеров. Взошедший на престол Николай I расправился с мятежниками жестоко. Пушкин, узнав о разгроме восстания, в котором принимали участие его друзья, тяжело переживал их неудачу и ждал, что царский гнев обрушится и на него:</p>
-
     <blockquote class="para quote" id="p21">
       «Я был в связи почти со всеми и в переписке со многими из заговорщиков».
     </blockquote>
-
     <p class="para" id="p22">Опасаясь обыска, он жёг бумаги.</p>
-
     <p class="para" id="p23">В 1826 году по указанию Николая I была возбуждена проверка благонадёжности Пушкина, командирован в Псковскую губернию спецагент. Но он под влиянием личности Пушкина не нашёл в его действиях ничего подозрительного. А, может быть, и не смог доказать. В любом случае, царь решил воздействовать на поэта иначе — использовать его дарование в своих интересах. В сентябре 1826 года Пушкина с фельдъегером срочно доставили в Москву. На приёме у Николая I поэт не скрывал революционных убеждений и на прямой вопрос ответил, что 14 декабря, если бы находился в столице, был бы вместе с друзьями на Сенатской площади. Николай I не был глупым политиком, поэтому объявил о прощении и обещал полную свободу творчества, заявив, что сам станет его цензором. Но подобное царское внимание обернулось постоянным прессингом Александра Сергеевича: тройная цензура, тотальная слежка, перлюстрация переписки, постоянные замечания — и от царя, и от шефа жандармов Бенкендорфа. В таких условиях отношения поэта и царя всё больше обострялись. В 1829 году Пушкин без разрешения сбежал на Кавказ. Разгневанный царь через Бенкендорфа объявил ему выговор. Поездка отразилась в путевых очерках <a href="https://www.culture.ru/books/392/puteshestvie-v-arzrum-vo-vremya-pokhoda-1829-goda" target="_blank" rel="noopener">«Путешествие в Арзрум»</a> (1829).</p>
-
     <p class="para" id="p24">Верность друзьям-декабристам Пушкин пронёс через всю жизнь — как и ненависть к самодержавному строю. Пушкин шлёт послание <a href="https://www.culture.ru/poems/5791/vo-glubine-sibirskikh-rud" target="_blank" rel="noopener">«В Сибирь»</a>: «оковы тяжкие падут». Власти, разумеется, не оставили это без внимания — как и стихотворение <a href="https://www.culture.ru/poems/4726/andrei-shene" target="_blank" rel="noopener">«Андре Шенье»</a> и <a href="https://www.culture.ru/poems/5928/gavriiliada" target="_blank" rel="noopener">«Гавриилиаду»</a>. Пришлось объясняться — и в Сенате, и лично перед царём. На поэта ополчилась правительственная печать, которая твердила о предательстве и снижении таланта.</p>
-
     <p class="para" id="p25">На личном фронте у Александра Сергеевича тоже не ладилось. Сватовство к первой красавице Петербурга Наталии Гончаровой в 1829 году закончилось отказом.</p>
-
     <p class="para" id="p26">В сентябре 1830 года Пушкин уехал в имение «Болдино», частично выделенное ему отцом, — и за три месяца там, в изоляции, выдал столько, сколько иные не пишут за десятилетия: дописал <a href="https://www.culture.ru/poems/4481/evgenii-onegin" target="_blank" rel="noopener">«Евгения Онегина»</a>, создал маленькие трагедии — <a href="https://www.culture.ru/poems/5566/skupoi-rycar" target="_blank" rel="noopener">«Скупого рыцаря»</a>, <a href="https://www.culture.ru/poems/5568/mocart-i-saleri" target="_blank" rel="noopener">«Моцарта и Сальери»</a>, <a href="https://www.culture.ru/poems/5570/kamennyi-gost" target="_blank" rel="noopener">«Каменного гостя»</a> и <a href="https://www.culture.ru/poems/5065/pir-vo-vremya-chumy" target="_blank" rel="noopener">«Пир во время чумы»</a>, — <a href="https://www.culture.ru/books/1033/povesti-pokoinogo-ivana-petrovicha-belkina" target="_blank" rel="noopener">«Повести Белкина»</a>, поэму <a href="https://www.culture.ru/poems/5081/domik-v-kolomne" target="_blank" rel="noopener">«Домик в Коломне»</a>, плюс массу стихов и статей.</p>
-
     <p class="para" id="p27">Вскоре настойчивость позволила ему добиться женитьбы на Гончаровой, и он перебрался в Петербург.</p>
-
     <p class="para" id="p28">Пушкинский гений требовал тишины: сидеть вдали от придворного шума, не тратить себя на церемонии, а заниматься литературой. Но его жена рвалась блистать в высшем обществе, и это во многом определило дальнейший рок событий. Ему приходилось разрываться между творчеством и скучными балами.</p>
-
     <p class="para" id="p29">С 1830 года Пушкин копался в архивах, всё сильнее увлекаясь историей пугачёвского восстания. Изучив бумаги, он в 1833 году отправился в Оренбургскую губернию — туда, где всё это происходило: собирал материал, разговаривал с живыми пугачёвцами. Итогом исследования стала <a href="https://www.culture.ru/books/655/istoriya-pugacheva" target="_blank" rel="noopener">«История Пугачёва»</a> (1833). Из этих же материалов выросла повесть <a href="https://www.culture.ru/books/266/kapitanskaya-dochka" target="_blank" rel="noopener">«Капитанская дочка»</a> (1836). А тема крестьянского бунта отозвалась и в другой повести — <a href="https://www.culture.ru/books/52/dubrovskii" target="_blank" rel="noopener">«Дубровский»</a> (1833).</p>
-
     <p class="para" id="p30">В тридцатые годы Пушкин всё плотнее уходил в журналистику: писал критические и публицистические статьи, заметки, вёл жаркие споры с реакционерами и глупцами. В 1830 году он вместе с Дельвигом редактировал «Литературную газету», а в 1836-м основал «Современник». Пушкин внимательно следил за статьями Белинского. Но и журналистика, как и само творчество поэта, вызывала раздражение у реакционной печати и у правящей верхушки. Николай I и придворные круги ненавидели Пушкина, но не смели открыто с ним расправиться. Этот конфликт и привёл его к гибели.</p>
-
     <p class="para" id="p31">Барон д`Антес — жалкий, проклинаемый в веках приёмный сын голландского посланника Геккерена, реакционер, монархист, представитель «золотой молодёжи». Он убил нашего Пушкина. 27 января 1837 года в Петербурге, на Чёрной речке, за комендантской дачей, состоялась дуэль. Пушкин был смертельно ранен и через два дня, 29 января, скончался.</p>
-
     <p class="para" id="p32">Смерть Пушкина стала тяжёлой утратой для русского народа. Она всколыхнула общество примерно как восстание декабристов. Это общее горе и гнев лучше всех выразил М. Ю. Лермонтов — в <a href="https://www.culture.ru/poems/36607/smert-poeta" target="_blank" rel="noopener">«Смерти поэта»</a>, заклеймив убийц. Пушкина похоронили позорно и тайно, испугавшись народного гнева. Однако Питер гудел несколько дней. Россия ещё не видела такие толпы людей, желавших проститься с гением и расправиться с подлецом-убийцей. Дантеса судил военный суд, но приговорил лишь к лишению чинов и высылке. Он дожил до 83, став сенатором во Франции и продолжая, по некоторым сведениям, тайно работать на царское правительство. Николай I официально встречался с Дантесом в Потсдаме как с представителем французского президента.</p>
-
     <p class="para" id="p33">Пушкин был заложником эпохи: его зрелость и расцвет пришлись на 1820–1830-е, то есть на самый первый, дворянский этап русского освободительного движения. Ленин описал этот этап формулой «дворяне и помещики, декабристы и Герцен» — и Пушкин как раз вращался в этом кругу и дышал этим воздухом. Фоном был мощный патриотический подъём: страна только что победила в Отечественной войне.</p>
-
     <blockquote class="para quote" id="p34">
       «Воспитанный в семействе и в жизни, учившийся в то время, когда после событий Отечественной войны русские стали приходить к самосознанию, имевший случай войти в соприкосновение со всеми классами русского общества, Пушкин умел постигнуть истинные потребности и истинный характер народного быта». <span class="author">Добролюбов</span>
     </blockquote>
-
     <p class="para" id="p35">Пушкин остро ощущал силу народа и его тягу к воле. Он видел, как людей давит вся эта машина: полицейский произвол, насилие, крепостничество. Его время — это трещина в феодальном укладе, когда вопрос о крепостном праве и о смене строя висел в воздухе. Как человек передовых взглядов, болевший за судьбу Родины, он не мог пройти мимо двух главных тем — самодержавия и крепостничества. На него влияли и западноевропейские освободительные веяния: отзвуки Французской революции 1789 года, революционные бури в Италии, Испании, Греции. Он был близок к той дворянской молодёжи, что сбивалась в тайные общества и готовила революцию через военный заговор. Однако прямо и ясно Пушкин по теме крепостничества и самодержавия так и не высказался. Однако вся система феодальных отношений, дворянских традиций, придворного раболепия шла против того, чем он жил. Независимость он воспитывал в себе ещё с детства.</p>
-
     <blockquote class="para quote" id="p36">
       «Но от кого бы я ни происходил, — писал он, — …образ мыслей моих от этого никак бы не зависел».
     </blockquote>
-
     <p class="para" id="p37">Горький комментировал:</p>
-
     <blockquote class="para quote" id="p38">
       «Это слова человека, который чувствовал, что для него интересы всей нации выше интересов одного дворянства, а говорил он так потому, что его личный опыт был шире и глубже опыта дворянского класса». <span class="author">Горький</span>
     </blockquote>
-
     <p class="para" id="p39">Выросший на идеях Просвещения и гуманизма, Пушкин в своём так и остался чужим в дворянской среде. Чинопочитание, праздность, раболепие перед двором были ему физически противны. Он резко высказывался о крепостных порядках, презирал высшую знать и в какой-то момент думал уехать из России — не из каприза, а потому что задыхался от полицейского, царского, цензурного гнёта.</p>
-
     <p class="para" id="p40">Крестьянский вопрос он понимал трагически — без иллюзий, но и без барского высокомерия. Холерные бунты показали ему, насколько глубоко крестьяне ненавидят помещичий произвол. Он понимал, что укоренившееся рабство падёт только в результате русского бессмысленного и беспощадного бунта. Но тот же опыт Разина и Пугачёва показывал, что бунт этот слеп и неорганизован. Разина он называл «единственным поэтическим лицом русской истории», а Пугачёва нарисовал тепло и правдиво: как реалист, он честно показывал, что значило движение крестьянских масс, не превращая его вождя ни в карикатуру, ни в икону.</p>
-
     <p class="para" id="p41">В отношении к будущему России Пушкин не был ни защитником старины, ни апологетом нового. Он видел прогрессивную роль буржуазного развития, но не идеализировал капитализм.</p>
-
     <p class="para" id="p42">Самое главное, что Пушкин был не только великим поэтом, значительным общественным деятелем, мыслителем, к слову которого прислушивались передовые круги, но и умнейшим человеком своего времени. Он жаждал стать публицистом, но цензура душила его под страхом каторги. Пушкин читал всю политическую литературу эпохи, знал Канта, Шеллинга, Фихте, Гегеля, Сен-Симона. Его начитанность — не блажь, а фундамент мировоззрения.</p>
-
     <p class="para" id="p43">Историю Пушкин читал не как собрание красивых преданий, а как науку и познание: источники надо проверять, а не подгонять под идеологию. Русскую старину он не приукрашивал и не преклонялся перед ней. Его интересовали люди, которые что-то реально сделали для страны, — вот почему в его поле зрения оказываются Минин и Пожарский, Ломоносов и Радищев. Гордиться прошлым, по Пушкину, необходимо — но за конкретные дела, а не за то, чья кровь в тебе течёт.</p>
-
     <p class="para" id="p44">Патриотизм у него был не парадный, а взыскательный.</p>
-
     <blockquote class="para quote" id="p45">
       «Только революционная голова, подобная… Пестелю, — писал он, — может любить Россию — так, как писатель только может любить её язык. Всё должно творить в этой России и в этом русском языке».
     </blockquote>
-
     <p class="para" id="p46">То есть любить Россию — не значит нахваливать её порядки; это значит в ней работать, создавать, а не прислуживать. Из этого и вырастала та высокая мерка, которую он прикладывал и к стране, и к самому себе.</p>
-
     <p class="para" id="p47">Пушкин — русский до глубины души. Он сам говорил, что ни за что на свете не променял бы Отечество. И в этом — его трагедия: с одной стороны, он горячо любил Родину, желал ей добра, гордился её прошлым; с другой — пытался бежать из России, спасаясь от самодержавного деспотизма, не понимая, как с ним бороться. Пушкин, как и всякий гений, намного порядков перерос эпоху, смотрел вперёд, в будущее. Именно поэтому Белинский писал, что Пушкин — воспитатель грядущих поколений.</p>
-
     <div class="colophon" aria-hidden="true">
       <span class="orn">★</span>
     </div>
   </article>
 </main>
-
 <button class="fab" id="fab" type="button" aria-pressed="false" aria-label="Сохранить текущий абзац">
   <svg viewBox="0 0 24 24" aria-hidden="true">
     <path d="M6.5 4.5h11a1 1 0 0 1 1 1v14.2l-6.5-4.2-6.5 4.2V5.5a1 1 0 0 1 1-1Z"/>
   </svg>
 </button>
-
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://unpkg.com/delaunator@5.0.0/delaunator.min.js"></script>
@@ -439,30 +357,22 @@ h1{
 <script>
 (function () {
   'use strict';
-
   var $ = function (s, c) { return (c || document).querySelector(s); };
   var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
-
   var KEY = 'pushkin.marks.v15';
   var FINE_POINTER = window.matchMedia('(pointer: fine)').matches;
-
   var IS_MOBILE = window.matchMedia('(pointer: coarse)').matches ||
                   window.innerWidth < 768;
   var SHATTER_TIME_SCALE  = IS_MOBILE ? 2.1 : 1.0;
   var SHATTER_DELAY_SCALE = IS_MOBILE ? 1.8 : 1.0;
   var SHATTER_MAX_WAIT    = IS_MOBILE ? 6000 : 3500;
-
   var paras = $$('.para');
   var byId = {};
   paras.forEach(function (p) { byId[p.id] = p; });
-
   function runHeroIntro() {
     document.documentElement.classList.remove('preload');
-
     if (typeof gsap === 'undefined') return;
-
     var tl = gsap.timeline();
-
     tl.fromTo(['.hero .eyebrow', '.hero h1', '.hero .dates', '.hero .hero-rule'],
       {
         opacity: 0,
@@ -472,14 +382,12 @@ h1{
       },
       { opacity: 1, x: 0, y: 0, rotation: 0, duration: 2, stagger: 0.1, ease: "elastic.out(1, 0.7)" }
     );
-
     tl.fromTo('#p1',
       { opacity: 0, y: 50, rotation: -2 },
       { opacity: 1, y: 0, rotation: 0, duration: 2, ease: "elastic.out(1, 0.8)" },
       "-=1.5"
     );
   }
-
   (function waitAndReveal() {
     var fontP = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
     var gsapP = (typeof gsap !== 'undefined')
@@ -488,19 +396,15 @@ h1{
           if (document.readyState === 'complete') resolve();
           else window.addEventListener('load', resolve, { once: true });
         });
-
     var readyP = Promise.all([fontP, gsapP]).catch(function () { return null; });
     var timeoutP = new Promise(function (resolve) { setTimeout(resolve, 2000); });
-
     Promise.race([readyP, timeoutP]).then(runHeroIntro);
   })();
-
   var closeEl = $('#case-close');
   window.addEventListener('scroll', function () {
     if (window.scrollY > 40) closeEl.classList.add('is-faded');
     else closeEl.classList.remove('is-faded');
   }, { passive: true });
-
   function load() {
     try {
       var a = JSON.parse(localStorage.getItem(KEY) || '{}');
@@ -510,14 +414,12 @@ h1{
   function save() {
     try { localStorage.setItem(KEY, JSON.stringify(marks)); } catch (e) {}
   }
-
   var marks = load();
   var fab = $('#fab');
   var toastEl = $('#toast');
   var hero = $('.hero');
   var curId = paras.length ? paras[0].id : null;
   var toastT = null;
-
   function fmtDate(ts) {
     try {
       return new Date(ts).toLocaleString('ru-RU', {
@@ -565,10 +467,8 @@ h1{
     clearTimeout(toastT);
     toastT = setTimeout(function () { toastEl.classList.remove('on'); }, 1800);
   }
-
   paras.forEach(applyMarkVisual);
   syncFab();
-
   if ('IntersectionObserver' in window) {
     var tracker = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
@@ -576,7 +476,6 @@ h1{
       });
     }, { rootMargin: '-42% 0px -42% 0px', threshold: 0 });
     paras.forEach(function (p) { tracker.observe(p); });
-
     var heroIO = new IntersectionObserver(function (entries) {
       var e = entries[0];
       fab.classList.toggle('show', !e.isIntersecting);
@@ -585,9 +484,7 @@ h1{
   } else {
     fab.classList.add('show');
   }
-
   fab.addEventListener('click', toggleBookmark);
-
   if (FINE_POINTER) {
     var dragging = false, startY = 0, startScroll = 0, moved = false;
     var THRESHOLD = 4;
@@ -615,43 +512,33 @@ h1{
     document.addEventListener('pointerup', onUp, { passive: true });
     document.addEventListener('pointercancel', onUp, { passive: true });
   }
-
   setTimeout(function () { fab.classList.add('show'); }, 2500);
-
   var TWO_PI = 2 * Math.PI;
-
   var imageWidth  = window.innerWidth;
   var imageHeight = window.innerHeight;
   var cameraStart = 3.5 * imageHeight;
-
   var scene, camera, renderer, group;
   var clickPosition = [imageWidth / 2, imageHeight / 2];
   var vertices = [];
   var indices = [];
   var activeShards = [];
   var shatterBusy = false;
-
   function randomRange(a, b) { return a + (b - a) * Math.random(); }
   function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
   function easeCubicIn(t)  { return t * t * t; }
   function getRandomWallDepth() { return Math.floor(500 * Math.random()) + 100; }
-
   function initShatter() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x000000);
-
     var fov = 2 * Math.atan(imageHeight / (2 * cameraStart)) * (180 / Math.PI);
     camera = new THREE.PerspectiveCamera(fov, imageWidth / imageHeight, 1, 20000);
     camera.position.set(0, 0, cameraStart);
     scene.add(camera);
-
     var light = new THREE.PointLight(0xffffff, 1);
     camera.add(light);
-
     group = new THREE.Group();
     group.position.set(-0.5 * imageWidth, -0.5 * imageHeight, 0);
     scene.add(group);
-
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.setSize(imageWidth, imageHeight);
@@ -664,11 +551,9 @@ h1{
     renderer.domElement.style.display = 'none';
     renderer.domElement.style.pointerEvents = 'none';
     document.body.appendChild(renderer.domElement);
-
     window.addEventListener('resize', onShatterResize, false);
     animateShatter();
   }
-
   function onShatterResize() {
     imageWidth  = window.innerWidth;
     imageHeight = window.innerHeight;
@@ -684,7 +569,6 @@ h1{
     }
     if (renderer) renderer.setSize(imageWidth, imageHeight);
   }
-
   function triangulate() {
     vertices = [];
     var rings = [
@@ -696,7 +580,6 @@ h1{
     var cx = clickPosition[0];
     var cy = clickPosition[1];
     vertices.push([cx, cy]);
-
     for (var ri = 0; ri < rings.length; ri++) {
       var ring = rings[ri];
       var spread = 0.25 * ring.r;
@@ -706,12 +589,10 @@ h1{
         vertices.push([x, y]);
       }
     }
-
     for (var i = 0; i < vertices.length; i++) {
       vertices[i][0] = clamp(vertices[i][0], 0, imageWidth);
       vertices[i][1] = clamp(vertices[i][1], 0, imageHeight);
     }
-
     var flat = new Float64Array(vertices.length * 2);
     for (var k = 0; k < vertices.length; k++) {
       flat[k * 2]     = vertices[k][0];
@@ -720,7 +601,6 @@ h1{
     var d = new Delaunator(flat);
     indices = Array.prototype.slice.call(d.triangles);
   }
-
   function shatter() {
     var frontBox = null;
     var frontZ = -Infinity;
@@ -731,24 +611,19 @@ h1{
       }
     });
     if (!frontBox) return;
-
     var depth = frontBox.userData.depth;
     var tex = frontBox.userData.texture;
-
     scene.remove(frontBox);
     frontBox.geometry.dispose();
     var oldMats = Array.isArray(frontBox.material) ? frontBox.material : [frontBox.material];
     for (var i = 0; i < oldMats.length; i++) oldMats[i].dispose();
-
     var sideColor = new THREE.Color(0xfbf2ed).multiplyScalar(0.82);
-
     var batch = {
       tex: tex,
       frontMat: new THREE.MeshBasicMaterial({ map: tex }),
       sideMat: new THREE.MeshPhongMaterial({ color: sideColor }),
       count: 0
     };
-
     var extrudeOpts = {
       depth: depth,
       bevelEnabled: false,
@@ -757,26 +632,21 @@ h1{
       bevelSize: 0,
       bevelThickness: 0
     };
-
     var dur = 420 * SHATTER_TIME_SCALE;
     var zBase = frontZ - depth / 2;
-
     for (var o = 0; o < indices.length; o += 3) {
       var A = vertices[indices[o]];
       var B = vertices[indices[o + 1]];
       var C = vertices[indices[o + 2]];
-
       var shape = new THREE.Shape();
       shape.moveTo(A[0], A[1]);
       shape.lineTo(B[0], B[1]);
       shape.lineTo(C[0], C[1]);
       shape.closePath();
-
       var geo;
       try {
         geo = new THREE.ExtrudeGeometry(shape, extrudeOpts);
       } catch (err) { continue; }
-
       var pos = geo.attributes.position;
       var uvArr = new Float32Array(pos.count * 2);
       for (var j = 0; j < pos.count; j++) {
@@ -784,19 +654,15 @@ h1{
         uvArr[j * 2 + 1] = pos.getY(j) / imageHeight;
       }
       geo.setAttribute('uv', new THREE.BufferAttribute(uvArr, 2));
-
       var mesh = new THREE.Mesh(geo, [batch.frontMat, batch.sideMat]);
       mesh.position.set(0, 0, zBase);
       group.add(mesh);
-
       var cx = (A[0] + B[0] + C[0]) / 3;
       var cy = (A[1] + B[1] + C[1]) / 3;
       var dx = cx - clickPosition[0];
       var dy = cy - clickPosition[1];
       var p = Math.sqrt(dx * dx + dy * dy);
-
       var delay = 0.0012 * p * randomRange(0.9, 1.1) * SHATTER_DELAY_SCALE;
-
       batch.count++;
       activeShards.push({
         mesh: mesh,
@@ -806,11 +672,9 @@ h1{
         batch: batch
       });
     }
-
     vertices = [];
     indices = [];
   }
-
   function updateShards() {
     var now = performance.now();
     for (var i = activeShards.length - 1; i >= 0; i--) {
@@ -832,28 +696,23 @@ h1{
       }
     }
   }
-
   function animateShatter() {
     requestAnimationFrame(animateShatter);
     updateShards();
     if (renderer && scene && camera) renderer.render(scene, camera);
   }
-
   async function triggerShatter(clientX, clientY) {
     if (shatterBusy) return;
     shatterBusy = true;
-
     var scrollX = window.scrollX || window.pageXOffset || 0;
     var scrollY = window.scrollY || window.pageYOffset || 0;
     var vw = window.innerWidth;
     var vh = window.innerHeight;
     var docEl = document.documentElement;
-
     var hiddenEls = [closeEl, fab, toastEl];
     hiddenEls.forEach(function (el) {
       if (el) el.style.visibility = 'hidden';
     });
-
     try {
       var captured = await html2canvas(document.body, {
         width: vw,
@@ -875,16 +734,12 @@ h1{
                  el === toastEl;
         }
       });
-
       renderer.domElement.style.display = 'block';
-
       clickPosition[0] = clientX;
       clickPosition[1] = vh - clientY;
-
       var tex = new THREE.CanvasTexture(captured);
       tex.minFilter = THREE.LinearFilter;
       tex.magFilter = THREE.LinearFilter;
-
       var depth = getRandomWallDepth();
       var geo = new THREE.BoxGeometry(vw, vh, depth);
       var sideColor = new THREE.Color(0xfbf2ed).multiplyScalar(0.82);
@@ -900,17 +755,13 @@ h1{
       box.userData.texture = tex;
       box.userData.isWall = true;
       scene.add(box);
-
       renderer.render(scene, camera);
       await new Promise(function (r) {
         requestAnimationFrame(function () { requestAnimationFrame(r); });
       });
-
       hiddenEls.forEach(function (el) { if (el) el.style.visibility = ''; });
-
       triangulate();
       shatter();
-
       var startedAt = performance.now();
       (function checkAndNavigate() {
         var elapsed = performance.now() - startedAt;
@@ -920,26 +771,21 @@ h1{
           setTimeout(checkAndNavigate, 50);
         }
       })();
-
     } catch (err) {
       hiddenEls.forEach(function (el) { if (el) el.style.visibility = ''; });
       window.location.href = '/index';
     }
   }
-
   if (typeof THREE !== 'undefined' && typeof Delaunator !== 'undefined' && typeof html2canvas !== 'undefined') {
     initShatter();
   }
-
   closeEl.addEventListener('click', function (e) {
     if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     if (typeof THREE === 'undefined' || typeof Delaunator === 'undefined' || typeof html2canvas === 'undefined') return;
     e.preventDefault();
     triggerShatter(e.clientX, e.clientY);
   });
-
 })();
 </script>
-
 </body>
 </html>
