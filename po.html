@@ -243,19 +243,7 @@
     background: var(--bg-1);
   }
 
-  .poem-wrap { position: relative; }
-  .poem-wrap::before,
-  .poem-wrap::after {
-    content: "";
-    display: block;
-    width: 36px;
-    height: 1px;
-    background: var(--ink-mute);
-    margin: 0;
-    opacity: 0.55;
-  }
-  .poem-wrap::before { margin-bottom: clamp(40px, 6vw, 64px); }
-  .poem-wrap::after  { margin-top: clamp(40px, 6vw, 64px); }
+    .poem-wrap { position: relative; }
 
   .poem {
     font-family: var(--font-classic);
@@ -1260,6 +1248,14 @@ XII
     setTileTexture(tile);
     tiles.push(tile);
   }
+  
+    const STACK_TOP_SLUG = "arion";
+  const stackTopIdx = tiles.findIndex((t) => t.data.slug === STACK_TOP_SLUG);
+  tiles.forEach((t, i) => {
+    t.stackZ = stackTopIdx < 0
+      ? i
+      : (i === stackTopIdx ? tiles.length - 1 : i < stackTopIdx ? i : i - 1);
+  });
 
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(() => {
@@ -1320,14 +1316,14 @@ XII
     isCollapsing = true;
     const stackH = pxToWorld(CONFIG.stackGap);
 
-    tiles.forEach((t, i) => {
+      tiles.forEach((t, i) => {
       const fromPos = t.mesh.position.clone();
-      const toPos = new THREE.Vector3(0, 0, i * stackH);
+      const toPos = new THREE.Vector3(0, 0, t.stackZ * stackH);
       const state = { p: 0 };
       tween(state, { p: 1 }, {
         duration: CONFIG.collapseDuration,
         ease: Eases.power2inOut,
-        delay: i * CONFIG.collapseStagger,
+        delay: t.stackZ * CONFIG.collapseStagger,
         onUpdate: () => {
           t.mesh.position.lerpVectors(fromPos, toPos, state.p);
         },
@@ -1596,6 +1592,33 @@ XII
 
     return letters;
   }
+  
+  function fitPoemFontSize(poemEl) {
+  const containerW = poemEl.clientWidth;
+  const probe = document.createElement("span");
+  probe.style.cssText =
+    "position:absolute;visibility:hidden;white-space:nowrap;" +
+    "font-family:var(--font-classic);font-weight:400;";
+  document.body.appendChild(probe);
+
+  // самая длинная строка по количеству символов
+  let longest = "";
+  poemEl.querySelectorAll("p").forEach(p => {
+    p.textContent.split("\n").forEach(line => {
+      if (line.length > longest.length) longest = line;
+    });
+  });
+
+  let size = 34;
+  probe.textContent = longest;
+  while (size > 12) {
+    probe.style.fontSize = size + "px";
+    if (probe.getBoundingClientRect().width <= containerW) break;
+    size -= 1;
+  }
+  probe.remove();
+  poemEl.style.fontSize = size + "px";
+}
 
   function animateCaseLetters(letters, baseDelay) {
     letters.forEach((s, i) => {
@@ -2146,15 +2169,15 @@ XII
       const stackH = pxToWorld(CONFIG.stackGap);
       let done = 0;
 
-      tiles.forEach((t, i) => {
+           tiles.forEach((t, i) => {
         const fromPos = t.mesh.position.clone();
-        const toPos = new THREE.Vector3(0, 0, i * stackH);
-        t.mesh.renderOrder = i;
+        const toPos = new THREE.Vector3(0, 0, t.stackZ * stackH);
+        t.mesh.renderOrder = t.stackZ;
         const state = { p: 0 };
         tween(state, { p: 1 }, {
           duration: CONFIG.collapseDuration,
           ease: Eases.power2inOut,
-          delay: i * CONFIG.collapseStagger,
+          delay: t.stackZ * CONFIG.collapseStagger,
           onUpdate: () => {
             t.mesh.position.lerpVectors(fromPos, toPos, state.p);
           },
