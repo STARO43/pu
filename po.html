@@ -31,6 +31,11 @@
     cursor: default !important;
   }
 
+  /* Базовый размер шрифта обновляется из JS (updateRootScale):
+     масштаб всей страницы привязан к размеру экрана (диагонали окна).
+     Все размеры ниже — в rem, т.е. автоматически масштабируются вместе с ним. */
+  html { font-size: 16px; }
+
   html, body {
     margin: 0; height: 100%;
     background: var(--bg-base);
@@ -89,9 +94,9 @@
 
   .case-close {
     position: absolute;
-    top: 22px; right: clamp(18px, 3vw, 34px);
+    top: 1.375rem; right: clamp(1.125rem, 3vw, 2.125rem);
     z-index: 60;
-    width: 24px; height: 24px;
+    width: 1.5rem; height: 1.5rem;
     padding: 0; margin: 0;
     background: none; border: none;
     outline: none;
@@ -103,7 +108,7 @@
     content: "";
     position: absolute;
     top: 50%; left: 50%;
-    width: 16px; height: 1px;
+    width: 1rem; height: 0.0625rem;
     background: var(--ink);
     opacity: .55;
     transition: opacity .6s cubic-bezier(.22,1,.36,1);
@@ -115,7 +120,7 @@
 
   .case-close--exit {
     position: fixed;
-    top: 22px; right: clamp(18px, 3vw, 34px);
+    top: 1.375rem; right: clamp(1.125rem, 3vw, 2.125rem);
     z-index: 70;
     color: var(--ink);
   }
@@ -142,7 +147,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: clamp(96px, 12vw, 140px) clamp(24px, 5vw, 72px) clamp(48px, 6vw, 84px);
+    padding: clamp(6rem, 12vw, 8.75rem) clamp(1.5rem, 5vw, 4.5rem) clamp(3rem, 6vw, 5.25rem);
     overflow: hidden;
     background: var(--bg-1);
   }
@@ -162,11 +167,11 @@
   }
   .case-hero__top, .case-hero__bottom {
     position: relative; z-index: 1;
-    max-width: 1240px; width: 100%;
+    max-width: 77.5rem; width: 100%;
     margin: 0 auto;
   }
   .case-kicker {
-    font-size: 11px;
+    font-size: 0.6875rem;
     letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--ink-mute);
@@ -176,7 +181,7 @@
   .case-title {
     margin: 0;
     font-family: var(--font-classic);
-    font-size: clamp(64px, 13vw, 200px);
+    font-size: clamp(3.2rem, 13vw, 12.5rem);
     line-height: 0.98;
     letter-spacing: -0.02em;
     font-weight: 400;
@@ -193,8 +198,8 @@
   .case-title__word { white-space: nowrap; }
 
   .case-meta {
-    max-width: 1080px; margin: 0 auto;
-    padding: clamp(48px, 7vw, 96px) clamp(24px, 4vw, 48px);
+    max-width: 67.5rem; margin: 0 auto;
+    padding: clamp(3rem, 7vw, 6rem) clamp(1.5rem, 4vw, 3rem);
     display: grid;
     grid-template-columns: 0.8fr 1fr 1.6fr;
     gap: 0;
@@ -204,8 +209,8 @@
   .case-meta > div {
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    padding: 0 clamp(16px, 2vw, 28px);
+    gap: 0.875rem;
+    padding: 0 clamp(1rem, 2vw, 1.75rem);
     border-left: 1px solid var(--line);
   }
   .case-meta > div:first-child {
@@ -213,7 +218,7 @@
     padding-left: 0;
   }
   .case-meta dt {
-    font-size: 10px;
+    font-size: 0.625rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--ink-mute);
@@ -223,23 +228,23 @@
   .case-meta dd {
     margin: 0;
     font-family: var(--font-classic);
-    font-size: clamp(18px, 1.6vw, 22px);
+    font-size: clamp(1.125rem, 1.6vw, 1.375rem);
     line-height: 1.3;
     letter-spacing: -0.005em;
     color: var(--ink);
   }
   .case-meta > div:nth-child(3) dd {
     font-family: var(--font-sans);
-    font-size: clamp(14px, 1.1vw, 16px);
+    font-size: clamp(0.875rem, 1.1vw, 1rem);
     line-height: 1.6;
     color: var(--ink-soft);
     font-weight: 400;
   }
 
   .case-article {
-    max-width: 760px;
+    max-width: 47.5rem;
     margin: 0 auto;
-    padding: clamp(72px, 11vw, 150px) clamp(24px, 4vw, 40px) clamp(48px, 7vw, 90px);
+    padding: clamp(4.5rem, 11vw, 9.375rem) clamp(1.5rem, 4vw, 2.5rem) clamp(3rem, 7vw, 5.625rem);
     background: var(--bg-1);
   }
 
@@ -247,7 +252,7 @@
 
   .poem {
     font-family: var(--font-classic);
-    font-size: clamp(24px, 2.4vw, 34px);
+    font-size: clamp(1.5rem, 2.4vw, 2.125rem); /* JS точно подгоняет под самую длинную строку */
     line-height: 1.5;
     letter-spacing: -0.003em;
     color: var(--ink);
@@ -265,23 +270,23 @@
 
 
   .case-eval {
-    max-width: 760px;
+    max-width: 47.5rem;
     margin: 0 auto;
-    padding: clamp(56px, 8vw, 104px) clamp(24px, 4vw, 40px) clamp(96px, 12vw, 160px);
+    padding: clamp(3.5rem, 8vw, 6.5rem) clamp(1.5rem, 4vw, 2.5rem) clamp(6rem, 12vw, 10rem);
     border-top: 1px solid var(--line);
     background: var(--bg-1);
   }
   .case-eval__label {
-    font-size: 10px;
+    font-size: 0.625rem;
     letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--ink-mute);
     font-weight: 500;
-    margin: 0 0 clamp(28px, 4vw, 44px);
+    margin: 0 0 clamp(1.75rem, 4vw, 2.75rem);
   }
   .case-eval__text {
     font-family: var(--font-literata);
-    font-size: clamp(17px, 1.5vw, 21px);
+    font-size: clamp(1.0625rem, 1.5vw, 1.3125rem);
     line-height: 1.65;
     letter-spacing: 0;
     color: var(--ink);
@@ -289,17 +294,22 @@
     font-weight: 400;
   }
 
-  .case-page .reveal { opacity: 0; transform: translateY(24px); }
+  .case-page .reveal { opacity: 0; transform: translateY(1.5rem); }
 
   @media (max-width: 720px) {
     .case-meta { grid-template-columns: 1fr; gap: 0; }
     .case-meta > div {
       border-left: none;
-      padding: 20px 0 0;
+      padding: 1.25rem 0 0;
       border-top: 1px solid var(--line);
     }
     .case-meta > div:first-child { border-top: none; padding-top: 0; }
-    .poem { font-size: clamp(20px, 5vw, 26px); }
+    .poem { font-size: clamp(1.25rem, 5vw, 1.625rem); }
+    /* стиху на телефоне нужен максимум ширины, чтобы строка не переносилась */
+    .case-article {
+      padding-left: clamp(1rem, 4vw, 1.5rem);
+      padding-right: clamp(1rem, 4vw, 1.5rem);
+    }
   }
   @media (prefers-reduced-motion: reduce) {
     .case-page .reveal { opacity: 1 !important; transform: none !important; }
@@ -368,9 +378,31 @@
   };
 
   const mobile = () => (window.innerWidth <= 640);
-  const getPlaneSize = () => (mobile() ? 78 : CONFIG.planeSize);
-  const getRadius    = () => (mobile() ? 136 : CONFIG.radius);
-  const getLogoOrbitRadius = () => (mobile() ? 150 : CONFIG.logoOrbitRadius);
+
+  /* ——— ЕДИНЫЙ МАСШТАБ, ПРИВЯЗАННЫЙ К РАЗМЕРУ ЭКРАНА ———
+     Эталон — окно 1920×1080 (RS = 1, font-size 16px). Масштаб растёт
+     пропорционально диагонали окна: на 4K (3840×2160) RS = 2 — все шрифты,
+     отступы и тайлы сферы вдвое крупнее. На телефонах и в небольших окнах
+     масштаб не опускается ниже 15px, иначе текст нечитаем.
+     Диагональ, а не просто ширина, — чтобы и очень широкий, и очень
+     высокий экран получили адекватный размер. */
+  const DESIGN_DIAG = Math.hypot(1920, 1080);
+  let RS = 1; // множитель относительно эталона (привязан к <html> font-size)
+
+  function updateRootScale() {
+    const w = window.innerWidth || 1280;
+    const h = window.innerHeight || 720;
+    let px = (16 * Math.hypot(w, h)) / DESIGN_DIAG;
+    px = Math.min(Math.max(px, 15), 34); // пол 15px, потолок 34px
+    RS = px / 16;
+    document.documentElement.style.fontSize = px.toFixed(3) + "px";
+  }
+  updateRootScale();
+
+  // Все размеры 3D-сцены умножаются на RS и пересчитываются при ресайзе
+  const getPlaneSize = () => (mobile() ? 78 : CONFIG.planeSize) * RS;
+  const getRadius    = () => (mobile() ? 136 : CONFIG.radius) * RS;
+  const getLogoOrbitRadius = () => (mobile() ? 150 : CONFIG.logoOrbitRadius) * RS;
 
   const Eases = {
     power2inOut: (t) => (t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2),
@@ -1260,6 +1292,8 @@ XII
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(() => {
       tiles.forEach((t) => setTileTexture(t));
+      // шрифты могли догрузиться после подгонки — пересчитываем ещё раз
+      if (currentPoemEl) refitPoemWithFonts(currentPoemEl);
     });
   }
 
@@ -1314,7 +1348,7 @@ XII
 
   function startCollapseThenExplode() {
     isCollapsing = true;
-    const stackH = pxToWorld(CONFIG.stackGap);
+    const stackH = pxToWorld(CONFIG.stackGap * RS);
 
       tiles.forEach((t, i) => {
       const fromPos = t.mesh.position.clone();
@@ -1478,14 +1512,24 @@ XII
     tapCancelled = true;
   });
 
+  let currentPoemEl = null;
+  let poemRefitTimer = null;
+  function schedulePoemRefit() {
+    if (!currentPoemEl) return;
+    clearTimeout(poemRefitTimer);
+    poemRefitTimer = setTimeout(function () { refitPoemWithFonts(currentPoemEl); }, 120);
+  }
+
   function resize() {
     W = host.clientWidth || window.innerWidth;
     H = host.clientHeight || window.innerHeight;
     if (!W || !H) return;
+    updateRootScale(); // пересчёт масштаба → все rem-размеры и 3D обновятся
     camera.aspect = W / H;
     camera.updateProjectionMatrix();
     renderer.setSize(W, H, false);
     layoutBasePositions();
+    schedulePoemRefit();
   }
   resize();
   new ResizeObserver(resize).observe(host);
@@ -1531,12 +1575,13 @@ XII
 
     caseTitleEl.textContent = "";
     caseTitleEl.setAttribute("aria-label", item.title);
+    // Заголовок в rem — масштабируется вместе с root font-size (на 4K в 2 раза крупнее)
     const len = item.title.length;
     let fs;
-    if (len <= 8) fs = "clamp(64px, 13vw, 200px)";
-    else if (len <= 13) fs = "clamp(48px, 10vw, 150px)";
-    else if (len <= 19) fs = "clamp(38px, 7.5vw, 110px)";
-    else fs = "clamp(30px, 5.4vw, 78px)";
+    if (len <= 8) fs = "clamp(4rem, 13vw, 12.5rem)";
+    else if (len <= 13) fs = "clamp(3rem, 10vw, 9.375rem)";
+    else if (len <= 19) fs = "clamp(2.375rem, 7.5vw, 6.875rem)";
+    else fs = "clamp(1.875rem, 5.4vw, 4.875rem)";
     caseTitleEl.style.fontSize = fs;
 
     const letters = [];
@@ -1574,6 +1619,10 @@ XII
     wrap.appendChild(poem);
     caseArticle.appendChild(wrap);
 
+    // подгоняем размер стиха под самую длинную строку — строки не переносятся
+    currentPoemEl = poem;
+    refitPoemWithFonts(poem);
+
     caseEval.innerHTML = "";
     const label = document.createElement("p");
     label.className = "case-eval__label reveal";
@@ -1587,38 +1636,91 @@ XII
     document.querySelectorAll("#case-page .reveal").forEach((el) => {
       el.dataset.revealed = "";
       el.style.opacity = "0";
-      el.style.transform = "translateY(24px)";
+      el.style.transform = "translateY(" + 24 * RS + "px)";
     });
 
     return letters;
   }
   
+  /* Стих никогда не переносится: измеряем ширину самой длинной строки
+     (при эталонных 100px) и высчитываем размер, при котором она займёт
+     всю доступную ширину контейнера. Затем — контрольная проверка при
+     итоговом кегле: ширины глифов на малых размерах не строго
+     пропорциональны (хинтинг), поэтому при необходимости дожимаем.
+     Сверху ограничиваем «идеальным» размером (34px × RS на десктопе,
+     ~23px × RS на телефоне), снизу — минимально читаемым.
+     Вызывается при открытии стиха и при ресайзе. */
   function fitPoemFontSize(poemEl) {
-  const containerW = poemEl.clientWidth;
-  const probe = document.createElement("span");
-  probe.style.cssText =
-    "position:absolute;visibility:hidden;white-space:nowrap;" +
-    "font-family:var(--font-classic);font-weight:400;";
-  document.body.appendChild(probe);
+    if (!poemEl) return;
+    // точная (дробная) ширина контейнера: clientWidth округляется,
+    // и строка может «влезть» по замеру, но перенестись при рендере
+    const containerW = poemEl.getBoundingClientRect().width - 0.5;
+    if (!containerW || containerW <= 0) return;
 
-  // самая длинная строка по количеству символов
-  let longest = "";
-  poemEl.querySelectorAll("p").forEach(p => {
-    p.textContent.split("\n").forEach(line => {
-      if (line.length > longest.length) longest = line;
+    const probe = document.createElement("span");
+    probe.style.cssText =
+      "position:absolute;visibility:hidden;pointer-events:none;" +
+      "white-space:pre;font-family:var(--font-classic);font-weight:400;" +
+      "letter-spacing:-0.003em;top:-9999px;left:-9999px";
+    document.body.appendChild(probe);
+
+    const BASE = 100; // эталонный кегль для замера
+    probe.style.fontSize = BASE + "px";
+
+    const measured = []; // [строка, ширина при BASE]
+    poemEl.querySelectorAll("p").forEach((p) => {
+      p.textContent.split("\n").forEach((line) => {
+        probe.textContent = line;
+        measured.push([line, probe.getBoundingClientRect().width]);
+      });
     });
-  });
+    if (!measured.length) { probe.remove(); return; }
 
-  let size = 34;
-  probe.textContent = longest;
-  while (size > 12) {
-    probe.style.fontSize = size + "px";
-    if (probe.getBoundingClientRect().width <= containerW) break;
-    size -= 1;
+    let maxW = 0;
+    measured.forEach((m) => { if (m[1] > maxW) maxW = m[1]; });
+    if (!maxW) { probe.remove(); return; }
+
+    const cap = (mobile() ? 1.45 : 2.125) * 16 * RS; // верхняя граница
+    const floorPx = Math.min(mobile() ? 12 : 15, cap); // минимальная читаемость
+
+    let size = Math.min((BASE * containerW) / maxW, cap);
+    size = Math.max(size, floorPx);
+    size = Math.floor(size * 100) / 100; // округляем вниз — и меряем при этом же кегле
+
+    // дожимаем: ширины глифов на малых кеглях не строго пропорциональны
+    // (хинтинг), поэтому проверяем все строки при итоговом размере
+    let guard = 0;
+    while (guard++ < 14) {
+      probe.style.fontSize = size.toFixed(2) + "px";
+      let over = 0, maxC = 0;
+      measured.forEach((m) => {
+        probe.textContent = m[0];
+        const w = probe.getBoundingClientRect().width;
+        if (w > maxC) maxC = w;
+        if (w > containerW) over++;
+      });
+      if (!over || size <= floorPx) break;
+      const next = Math.floor((size * (containerW / maxC) * 0.997) * 100) / 100;
+      if (next >= size) break; // защита от зацикливания
+      size = Math.max(next, floorPx);
+    }
+
+    probe.remove();
+    poemEl.style.fontSize = size.toFixed(2) + "px";
   }
-  probe.remove();
-  poemEl.style.fontSize = size + "px";
-}
+
+  /* Google Fonts подгружает кириллические сабсеты лениво — при первом
+     рендере текста. Чтобы замер не прошёл по метрикам fallback-шрифта,
+     явно догружаем нужное начертание и подгоняем размер ещё раз. */
+  function refitPoemWithFonts(poemEl) {
+    fitPoemFontSize(poemEl);
+    if (!(document.fonts && document.fonts.load)) return;
+    const sample = (poemEl.textContent || "").slice(0, 400);
+    Promise.all([
+      document.fonts.load('400 32px "Old Standard TT"', sample),
+      document.fonts.load('italic 400 32px "Old Standard TT"', sample),
+    ]).then(function () { fitPoemFontSize(poemEl); }).catch(function () {});
+  }
 
   function animateCaseLetters(letters, baseDelay) {
     letters.forEach((s, i) => {
@@ -1654,7 +1756,7 @@ XII
   function revealCaseEl(el) {
     if (el.dataset.revealed === "1") return;
     el.dataset.revealed = "1";
-    const st = { o: 0, y: 24 };
+    const st = { o: 0, y: 24 * RS };
     tween(st, { o: 1, y: 0 }, {
       duration: 0.85, ease: Eases.power3out,
       onUpdate: () => {
@@ -1711,7 +1813,7 @@ XII
   });
 
   caseScroll.addEventListener("scroll", () => {
-    if (caseScroll.scrollTop > 40) caseClose.classList.add("is-faded");
+    if (caseScroll.scrollTop > 40 * RS) caseClose.classList.add("is-faded");
     else caseClose.classList.remove("is-faded");
   }, { passive: true });
 
@@ -2082,6 +2184,10 @@ XII
 
   function playExitAnimation(clickX, clickY) {
     if (exitAnimating) return;
+    // Во время интро/сборки сфер прелоадер каждый кадр сам переставляет книги —
+    // запущенная поверх анимация закрытия конфликтовала бы с ним (дрожание/мерцание).
+    // Поэтому в этот период просто сразу уходим на главную, без анимации.
+    if (isLoading || isCollapsing) { window.location.href = "/index"; return; }
     exitAnimating = true;
     caseExit.style.display = "none";
 
@@ -2166,7 +2272,7 @@ XII
     }
 
     function stepStack() {
-      const stackH = pxToWorld(CONFIG.stackGap);
+      const stackH = pxToWorld(CONFIG.stackGap * RS);
       let done = 0;
 
            tiles.forEach((t, i) => {
@@ -2177,7 +2283,8 @@ XII
         tween(state, { p: 1 }, {
           duration: CONFIG.collapseDuration,
           ease: Eases.power2inOut,
-          delay: t.stackZ * CONFIG.collapseStagger,
+          // Без поштучной задержки: кольцо схлопывается в стопку одним движением,
+          // «Арион» (верхняя книга) — лицо стопки сразу по посадке, без опоздания.
           onUpdate: () => {
             t.mesh.position.lerpVectors(fromPos, toPos, state.p);
           },
@@ -2198,7 +2305,8 @@ XII
         tween(state, { p: 1 }, {
           duration: CONFIG.exitVanishDur,
           ease: Eases.power3in,
-          delay: i * 0.01,
+          // Все книги тают одновременно: стопка тает как одна книга — лицо стопки
+          // («Арион») не подменяется, и нет паузы перед началом растворения.
           onUpdate: () => {
             t.mesh.position.lerpVectors(fromP, center, state.p);
             t.mesh.scale.set(
